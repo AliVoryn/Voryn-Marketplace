@@ -1,0 +1,47 @@
+ 
+[profile.default]
+src = "src"
+test = "test"
+script = "script"
+libs = ["lib"]
+out = "out"
+cache_path = "cache"
+
+solc_version = "0.8.24"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+
+fuzz = { runs = 512, max_test_rejects = 65536 }
+invariant = { runs = 128, depth = 128, fail_on_revert = false }
+
+ffi = false
+fs_permissions = [{ access = "read", path = "./" }]
+
+gas_reports = ["*"]
+bytecode_hash = "none"
+
+remappings = [
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+    "@chainlink/contracts/=lib/chainlink/contracts/",
+    "forge-std/=lib/forge-std/src/",
+]
+
+[profile.ci]
+fuzz = { runs = 4096, max_test_rejects = 262144 }
+invariant = { runs = 512, depth = 256, fail_on_revert = false }
+verbosity = 3
+
+[profile.ci-fast]
+fuzz = { runs = 256 }
+invariant = { runs = 32, depth = 32 }
+
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = true
+int_types = "long"
+
+ 
