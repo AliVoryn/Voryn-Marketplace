@@ -1,10 +1,20 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "../interfaces/IRaffle.sol";
+
 library RaffleMath {
+    error NoTickets();
+
     function pickWinningTicket(uint256 randomWord, uint256 totalTickets) internal pure returns (uint256) {
+        if (totalTickets == 0) revert NoTickets();
         return randomWord % totalTickets;
     }
-    function findEntrant(IRaffle.Entrant[] storage entrants, uint256 winningTicketIndex) internal view returns (address) {
+
+    function findEntrant(IRaffle.Entrant[] storage entrants, uint256 winningTicketIndex)
+        internal
+        view
+        returns (address)
+    {
         uint256 low = 0;
         uint256 high = entrants.length;
         while (low < high) {

@@ -1,0 +1,27 @@
+name: Fork Smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  raffle-fork-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.3
+      - name: Install dependencies
+        run: ./script/install-dependencies.sh
+      - name: Run raffle fork smoke test
+        env:
+          FORK_RPC_URL: ${{ secrets.FORK_RPC_URL }}
+          RAFFLE_ADDRESS: ${{ secrets.RAFFLE_ADDRESS }}
+          VRF_COORDINATOR: ${{ secrets.VRF_COORDINATOR }}
+          VRF_SUBSCRIPTION_ID: ${{ secrets.VRF_SUBSCRIPTION_ID }}
+          VRF_CALLBACK_GAS_LIMIT: ${{ secrets.VRF_CALLBACK_GAS_LIMIT }}
+          VRF_REQUEST_CONFIRMATIONS: ${{ secrets.VRF_REQUEST_CONFIRMATIONS }}
+        run: forge test --match-path test/raffle/Raffle.Fork.t.sol -vvvv

@@ -1,0 +1,141 @@
+{{#each items}}
+:{{name}}: pass:normal[xref:#{{anchor}}[`++{{name}}++`]]
+{{/each}}
+
+{{#each functions}}
+:{{fullname}}: pass:normal[xref:#{{anchor}}[`++{{name}}++`]]
+{{/each}}
+
+[.contract]
+[[{{anchor}}]]
+=== `++{{name}}++` link:https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v{{ozVersion}}/{{__item_context.file.absolutePath}}[{github-icon},role=heading-link]
+
+[.hljs-theme-light.nopadding]
+```solidity
+import "@openzeppelin/{{__item_context.file.absolutePath}}";
+```
+
+{{{natspec.dev}}}
+
+{{#if modifiers}}
+[.contract-index]
+.Modifiers
+--
+{{#each modifiers}}
+* {xref-{{anchor~}} }[`++{{name}}({{names params}})++`]
+{{/each}}
+--
+{{/if}}
+
+{{#if hasFunctions}}
+[.contract-index]
+.Functions
+--
+{{#each inheritedFunctions}}
+{{#unless @first}}
+[.contract-subindex-inherited]
+.{{contract.name}}
+{{/unless}}
+{{#each functions}}
+* {xref-{{anchor~}} }[`++{{name}}({{names params}})++`]
+{{/each}}
+
+{{/each}}
+--
+{{/if}}
+
+{{#if hasEvents}}
+[.contract-index]
+.Events
+--
+{{#each inheritance}}
+{{#unless @first}}
+[.contract-subindex-inherited]
+.{{name}}
+{{/unless}}
+{{#each events}}
+* {xref-{{anchor~}} }[`++{{name}}({{names params}})++`]
+{{/each}}
+
+{{/each}}
+--
+{{/if}}
+
+{{#if hasErrors}}
+[.contract-index]
+.Errors
+--
+{{#each inheritance}}
+{{#unless @first}}
+[.contract-subindex-inherited]
+.{{name}}
+{{/unless}}
+{{#each errors}}
+* {xref-{{anchor~}} }[`++{{name}}({{names params}})++`]
+{{/each}}
+
+{{/each}}
+--
+{{/if}}
+
+{{#if hasInternalVariables}}
+[.contract-index]
+.Internal Variables
+--
+{{#each inheritance}}
+{{#unless @first}}
+[.contract-subindex-inherited]
+.{{name}}
+{{/unless}}
+{{#each internalVariables}}
+* {xref-{{anchor~}} }[`++{{typeDescriptions.typeString}} {{#if constant}}constant{{/if}} {{name}}++`]
+{{/each}}
+
+{{/each}}
+--
+{{/if}}
+
+{{#each modifiers}}
+[.contract-item]
+[[{{anchor}}]]
+==== `[.contract-item-name]#++{{name}}++#++({{typedParams params}})++` [.item-kind]#modifier#
+
+{{{natspec.dev}}}
+
+{{/each}}
+
+{{#each functions}}
+[.contract-item]
+[[{{anchor}}]]
+==== `[.contract-item-name]#++{{name}}++#++({{typedParams params}}){{#if returns2}} → {{typedParams returns2}}{{/if}}++` [.item-kind]#{{visibility}}#
+
+{{{natspec.dev}}}
+
+{{/each}}
+
+{{#each events}}
+[.contract-item]
+[[{{anchor}}]]
+==== `[.contract-item-name]#++{{name}}++#++({{typedParams params}})++` [.item-kind]#event#
+
+{{{natspec.dev}}}
+
+{{/each}}
+
+{{#each errors}}
+[.contract-item]
+[[{{anchor}}]]
+==== `[.contract-item-name]#++{{name}}++#++({{typedParams params}})++` [.item-kind]#error#
+
+{{{natspec.dev}}}
+
+{{/each}}
+
+{{#each internalVariables}}
+[.contract-item]
+[[{{anchor}}]]
+==== `{{typeDescriptions.typeString}} [.contract-item-name]#++{{name}}++#` [.item-kind]#internal{{#if constant}} constant{{/if}}#
+
+{{{natspec.dev}}}
+
+{{/each}}

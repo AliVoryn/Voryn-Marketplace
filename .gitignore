@@ -1,0 +1,15 @@
+cache/
+out/
+node_modules/
+.env
+.env.*
+!.env.example
+coverage/
+reports/
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+gambit_out/
+verification/**/reports/

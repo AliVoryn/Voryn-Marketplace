@@ -1,4 +1,4 @@
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
-@chainlink/contracts/=lib/chainlink/contracts/
+@chainlink/=lib/chainlink-evm/
 forge-std/=lib/forge-std/src/

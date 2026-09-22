@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Build, tests, coverage
+    runs-on: ubuntu-latest
+    env:
+      FOUNDRY_PROFILE: ci
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.3
+
+      - name: Toolchain
+        run: |
+          forge --version
+          cast --version
+          anvil --version
+          chisel --version
+
+      - name: Install Solidity dependencies
+        run: ./script/install-dependencies.sh
+
+      - name: Format
+        run: forge fmt --check
+
+      - name: Lint
+        run: forge lint
+
+      - name: Build
+        run: forge build --sizes
+
+      - name: Full test suite
+        run: forge test -vvvv
+
+      - name: Coverage
+        run: forge coverage --report summary --no-match-path 'script/**'
+
+      - name: Gas snapshot
+        run: forge snapshot
+
+  cre-workflow:
+    name: CRE workflow (TypeScript)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cre/protocol-automation
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cre/protocol-automation/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm test
+
+      - name: Audit
+        run: npm audit --audit-level=high
+
+  static-analysis:
+    name: Static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.3
+
+      - name: Install Solidity dependencies
+        run: ./script/install-dependencies.sh
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install Slither
+        run: python -m pip install --disable-pip-version-check slither-analyzer
+
+      - name: Slither
+        run: slither . --filter-paths "lib/"
