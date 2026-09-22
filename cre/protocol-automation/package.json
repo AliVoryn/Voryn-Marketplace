@@ -8,7 +8,7 @@
   "dependencies": {
     "@chainlink/cre-sdk": "1.22.0",
     "viem": "2.56.8",
-    "zod": "3.25.76"
+    "zod": "4.6.5"
   },
   "scripts": {
     "test": "node --experimental-strip-types --test automation.logic.test.ts config.test.ts",
