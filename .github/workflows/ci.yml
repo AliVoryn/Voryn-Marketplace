@@ -31,7 +31,7 @@ jobs:
           chisel --version
 
       - name: Install Solidity dependencies
-        run: ./script/install-dependencies.sh
+        run: bash ./script/install-dependencies.sh
 
       - name: Format
         run: forge fmt --check
