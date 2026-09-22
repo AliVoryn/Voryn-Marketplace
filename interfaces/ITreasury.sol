@@ -23,6 +23,7 @@ interface ITreasury {
     function availableBalance() external view returns (uint);
     function claimable(address account) external view returns (uint);
     function withdrawClaimable() external;
+    function setAuthorizedPayer(address payer, bool allowed) external;
     function setSpendingLimit(address payer, uint dailyLimit) external;
     function spendingLimitOf(address payer) external view returns (uint);
     function remainingDailyAllowance(address payer) external view returns (uint);

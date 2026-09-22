@@ -52,6 +52,7 @@ contract Staking is Ownable2Step, Pausable, ReentrancyGuard, IStaking {
 
     function fundRewards() external payable override {
         if (msg.value == 0) revert ZeroAmount();
+        rewardReserve += msg.value;
         emit RewardProgramFunded(msg.value, msg.sender);
     }
 
@@ -62,34 +63,42 @@ contract Staking is Ownable2Step, Pausable, ReentrancyGuard, IStaking {
             amount,
             keccak256("STAKING_REWARD_FUNDING")
         );
+        rewardReserve += amount;
         emit RewardProgramFunded(amount, treasury);
     }
 
     function scheduleRewardProgram(uint64 startAt,uint64 endAt,uint rewardAmount)  external  payable   override   onlyOwner {
+        _updateGlobal();
         RewardPhase phase = currentRewardPhase();
 
         if (phase == RewardPhase.Active ||phase == RewardPhase.Scheduled) 
             revert InvalidRewardProgram();
+        if (startAt >= endAt) revert InvalidRewardProgram();
 
-        if (rewardAmount > rewardInventory()) revert InvalidRewardProgram() ;
+        uint duration = endAt - startAt ;
+        if (duration == 0) revert InvalidRewardProgram();
 
-        uint duration = endAt - startAt ; 
-        uint newRate = rewardAmount / duration ; 
-        
-        if ( newRate == 0 || newRate > MAX_REWARD_RATE) revert InvalidRewardProgram();
-        
-        uint effectiveReward = newRate * duration ;
+        uint fundedBalance = rewardInventory() + rewardReserve;
+        if (rewardAmount > fundedBalance) revert InvalidRewardProgram();
+
+        uint newRate = rewardAmount / duration;
+        if (newRate == 0 || newRate > MAX_REWARD_RATE) revert InvalidRewardProgram();
+
+        uint effectiveReward = newRate * duration;
+        if (effectiveReward > rewardAmount) effectiveReward = rewardAmount;
 
         rewardStartAt = startAt;
         periodFinish = endAt;
         rewardRate = newRate;
-        rewardReserve = effectiveReward;
+        rewardReserve = rewardAmount;
         lastUpdateTime = startAt;
 
-        if (msg.value > 0) emit RewardProgramFunded( msg.value, msg.sender);
-        
-        emit RewardProgramScheduled( startAt, endAt, effectiveReward, newRate);
+        if (msg.value > 0) {
+            rewardReserve += msg.value;
+            emit RewardProgramFunded(msg.value, msg.sender);
+        }
 
+        emit RewardProgramScheduled(startAt, endAt, effectiveReward, newRate);
     }
   
     function stake () external payable override nonReentrant whenNotPaused {
@@ -133,7 +142,8 @@ contract Staking is Ownable2Step, Pausable, ReentrancyGuard, IStaking {
             positions[msg.sender].active = false;
         }
 
-        payable(msg.sender).sendValue(amount);
+        (bool success,) = payable(msg.sender).call{value: amount}("");
+        if (!success) revert RewardTransferFailed();
         emit Unstaked(msg.sender, amount);
     }
 
@@ -155,7 +165,8 @@ contract Staking is Ownable2Step, Pausable, ReentrancyGuard, IStaking {
         totalRewardLiability -= reward;
         positions[msg.sender].rewardDebt = 0;
 
-        payable(msg.sender).sendValue(reward);
+        (bool success,) = payable(msg.sender).call{value: reward}("");
+        if (!success) revert RewardTransferFailed();
         emit RewardClaimed(msg.sender, reward);
     }
 
@@ -213,7 +224,8 @@ contract Staking is Ownable2Step, Pausable, ReentrancyGuard, IStaking {
         positions[msg.sender].lastAction = uint64(block.timestamp);
 
         totalStaked -= principal;
-        payable(msg.sender).sendValue(payout);
+        (bool success,) = payable(msg.sender).call{value: payout}("");
+        if (!success) revert RewardTransferFailed();
 
         emit EmergencyUnstake(msg.sender, principal, penalty);
     }

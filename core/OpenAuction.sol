@@ -239,7 +239,8 @@ contract OpenAuction is Ownable2Step, ReentrancyGuard, Pausable, IAuction {
         if (amount == 0) revert SettlementFailed();
         refunds[msg.sender] = 0;
         totalRefundLiability -= amount;
-        payable(msg.sender).sendValue(amount);
+        (bool success,) = payable(msg.sender).call{value: amount}("");
+        if (!success) revert SettlementFailed();
         emit RefundWithdrawn(msg.sender, amount);
     }
 
@@ -293,5 +294,5 @@ contract OpenAuction is Ownable2Step, ReentrancyGuard, Pausable, IAuction {
         if (address(this).balance < expected) revert EscrowInvariantBroken();
     }
 
-    receive() external payable { revert("DIRECT_ETH_DISABLED"); }
+    receive() external payable { revert DirectPaymentNotAllowed(); }
 }

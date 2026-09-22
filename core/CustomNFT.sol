@@ -72,7 +72,7 @@ contract CustomNFT is AccessControl, Pausable, ReentrancyGuard, ICustomNFT {
     }
 
     function currentMintPhase() public view override returns (MintPhase) {
-        if (mintStartAt == 0 && mintEndAt == 0) return MintPhase.Closed;
+        if (mintStartAt == 0 && mintEndAt == 0) return MintPhase.Active;
         if (mintStartAt != 0 && block.timestamp < mintStartAt) return MintPhase.Scheduled;
         if (mintEndAt != 0 && block.timestamp >= mintEndAt) return MintPhase.Ended;
         return MintPhase.Active;

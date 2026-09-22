@@ -6,6 +6,7 @@ interface IPaymentManager {
     event PaymentWithdrawn(address indexed account, uint amount);
     error NothingToWithdraw();
     error PaymentFailed();
+    error DirectPaymentNotAllowed();
 
     function credit(address account, bytes32 reason) external payable;
     function withdraw() external;

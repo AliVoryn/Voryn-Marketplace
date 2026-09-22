@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -6,6 +7,8 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+
+
 import "../interfaces/IMarketplace.sol";
 import "../interfaces/ICustomNFT.sol";
 import "../interfaces/ITreasury.sol";
@@ -110,8 +113,7 @@ contract Marketplace is Initializable, UUPSUpgradeable, AccessControlUpgradeable
         address seller = item.seller;
         item.status = ListingStatus.Sold;
         uint16 feeBps =_effectiveFeeBps(seller);
-        uint256 fee =ListingMath.protocolFee(msg.value,feeBps);
-        uint256 sellerAmount = msg.value - fee;
+        (uint256 fee, uint256 sellerAmount) = FeeMath.split(msg.value, feeBps);
         _creditTreasury(fee,keccak256("MARKETPLACE_FEE"));
         _creditTreasuryClaim(seller,sellerAmount,keccak256("MARKETPLACE_PROCEEDS"));
         ICustomNFT(item.nft).safeTransferFrom(seller,msg.sender,item.tokenId);
@@ -149,7 +151,7 @@ contract Marketplace is Initializable, UUPSUpgradeable, AccessControlUpgradeable
         if (offer.expiresAt > block.timestamp) { revert OfferPastExpiry(); }
         offer.status = OfferStatus.Expired;
         totalOfferEscrow -= offer.amount;
-        IPaymentManager(paymentManager).credit{value: offer.amount}(offer.buyer,keccak256("OFFER_EXPIRED"));
+        IPaymentManager(paymentManager).credit{value: offer.amount}(offer.buyer,keccak256(""));
         emit OfferExpired(offerId);
         _assertOfferEscrow();
     }
@@ -162,8 +164,7 @@ contract Marketplace is Initializable, UUPSUpgradeable, AccessControlUpgradeable
         offer.status = OfferStatus.Accepted;
         totalOfferEscrow -= offer.amount;
         uint16 feeBps = _effectiveFeeBps(msg.sender);
-        uint256 fee = ListingMath.protocolFee(offer.amount,feeBps);
-        uint256 sellerAmount = offer.amount - fee;
+        (uint256 fee, uint256 sellerAmount) = FeeMath.split(offer.amount, feeBps);
         _creditTreasury(fee,keccak256("OFFER_FEE"));
         _creditTreasuryClaim(msg.sender,sellerAmount,keccak256("OFFER_PROCEEDS"));
         ICustomNFT(offer.nft).safeTransferFrom(msg.sender,offer.buyer,offer.tokenId);
@@ -231,18 +232,15 @@ contract Marketplace is Initializable, UUPSUpgradeable, AccessControlUpgradeable
         minimumFeeBps = bps;
     }
 
-    function setCustomFee(address account,uint16 bps) external onlyRole(ADMIN_ROLE) {
+    function customFeeManage(address account,uint16 bps , bool active) external onlyRole(ADMIN_ROLE) {
         if (bps > 1000) { revert InvalidBps(); }
         customFeeBps[account] = bps;
-        customFeeEnabled[account] = true;
+        customFeeEnabled[account] = active;
         emit FeeTierUpdated(account, bps);
     }
 
-    function clearCustomFee(address account) external onlyRole(ADMIN_ROLE) {
-        customFeeEnabled[account] = false;
-    }
 
-    function invalidateNonce() external {
+    function invalidateNonce() external override {
         orderNonce[msg.sender] += 1;
     }
 
@@ -294,7 +292,7 @@ contract Marketplace is Initializable, UUPSUpgradeable, AccessControlUpgradeable
         return nextOfferId;
     }
 
-    function domainInfo() external view returns (string memory name_,string memory version_) {
+    function domainInfo() external pure returns (string memory name_,string memory version_) {
         return ("Professional Marketplace","1");
     }
 
@@ -330,8 +328,7 @@ contract Marketplace is Initializable, UUPSUpgradeable, AccessControlUpgradeable
         if (msg.value != price) { revert InsufficientValue(); }
         if (ICustomNFT(nft).ownerOf(tokenId) != seller) { revert SellerNoLongerOwnsAsset(); }
         uint16 feeBps = _effectiveFeeBps(seller);
-        uint256 fee = ListingMath.protocolFee(msg.value,feeBps);
-        uint256 sellerAmount = msg.value - fee;
+        (uint256 fee, uint256 sellerAmount) = FeeMath.split(msg.value, feeBps);
         _creditTreasury(fee,keccak256("SIGNED_LISTING_FEE"));
         _creditTreasuryClaim(seller,sellerAmount,keccak256("SIGNED_LISTING_PROCEEDS"));
         ICustomNFT(nft).safeTransferFrom(seller,msg.sender,tokenId);

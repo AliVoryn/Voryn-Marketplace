@@ -29,7 +29,7 @@ contract ProtocolRegistry is Ownable2Step, IRegistry {
     }
 
     function setRegistrar(address account,bool allowed) external onlyOwner {
-        if (account == address(0)) revert UnauthorizedRegistrar();
+        if (account == address(0)) revert ZeroAddress();
         
         registrar[account] = allowed;
     }
@@ -72,15 +72,13 @@ contract ProtocolRegistry is Ownable2Step, IRegistry {
     {
         return allInstances.length();
     }
-
-    function byKindCount(bytes32 kind) external view returns (uint256) {
+     function byKindCount(bytes32 kind) external view returns (uint256) {
         return byKind[kind].length();
     }
-
+ 
     function byCreatorCount(address creator) external view returns (uint256) {
         return byCreator[creator].length();
     }
-
     function allAt(uint256 index) external view returns (address) {
         return allInstances.at(index);
     }

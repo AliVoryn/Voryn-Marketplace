@@ -50,6 +50,7 @@ interface IAuction {
     error SettlementFailed();
     error InvalidBuyout();
     error EscrowInvariantBroken();
+    error DirectPaymentNotAllowed();
 
     function createAuction(address nft, uint tokenId, uint reservePrice, uint minIncrement, uint64 startAt, uint64 duration) external returns (uint auctionId);
     function startAuction(uint auctionId) external;

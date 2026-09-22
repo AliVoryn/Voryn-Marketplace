@@ -37,7 +37,7 @@ contract Treasury is Ownable2Step, ReentrancyGuard, ITreasury {
         _;
     }
 
-    function setAuthorizedPayer(address payer,bool allowed) external onlyOwner {
+    function setAuthorizedPayer(address payer,bool allowed) external override onlyOwner {
         if (payer == address(0)) revert ZeroAddress();
         
         authorizedPayer[payer] = allowed;
@@ -79,9 +79,9 @@ contract Treasury is Ownable2Step, ReentrancyGuard, ITreasury {
         _consumeDailyAllowance(msg.sender,amount);
 
         if (amount >availableBalance()) revert InsufficientAvailableBalance();
-        
 
-        recipient.sendValue(amount);
+        (bool success,) = recipient.call{value: amount}("");
+        if (!success) revert PaymentFailed();
 
         emit Payment(recipient,amount,reason);
     }
@@ -95,13 +95,13 @@ contract Treasury is Ownable2Step, ReentrancyGuard, ITreasury {
         uint amount = claimableBalance[msg.sender];
 
         if (amount == 0) revert InsufficientAvailableBalance();
-        
 
         claimableBalance[msg.sender] = 0;
 
         totalLiabilities -= amount;
 
-        payable(msg.sender).sendValue(amount);
+        (bool success,) = payable(msg.sender).call{value: amount}("");
+        if (!success) revert PaymentFailed();
 
         emit Payment(msg.sender,amount,keccak256("CLAIM"));
     }
@@ -145,12 +145,11 @@ contract Treasury is Ownable2Step, ReentrancyGuard, ITreasury {
 
     function emergencyRescue(address payable recipient,uint amount) external onlyOwner nonReentrant {
         if (recipient == address(0)) revert ZeroAddress();
-        
 
         if (amount >availableBalance()) revert NoRescueBalance();
-        
 
-        recipient.sendValue(amount);
+        (bool success,) = recipient.call{value: amount}("");
+        if (!success) revert PaymentFailed();
 
         emit EmergencyRescue(recipient,amount);
     }

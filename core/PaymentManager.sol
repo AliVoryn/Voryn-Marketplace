@@ -49,12 +49,12 @@ contract PaymentManager is Ownable2Step, ReentrancyGuard, IPaymentManager {
         uint amount = claimableBalance[msg.sender];
 
         if (amount == 0) revert NothingToWithdraw();
-        
 
         claimableBalance[msg.sender] = 0;
         totalClaimable -= amount;
 
-        payable(msg.sender).sendValue(amount);
+        (bool success,) = payable(msg.sender).call{value: amount}("");
+        if (!success) revert PaymentFailed();
 
         emit PaymentWithdrawn(msg.sender,amount);
     }
@@ -63,6 +63,8 @@ contract PaymentManager is Ownable2Step, ReentrancyGuard, IPaymentManager {
     {
         return claimableBalance[account];
     }
-
-    receive() external payable {}
+ 
+    receive() external payable {
+        revert DirectPaymentNotAllowed();
+    }
 }

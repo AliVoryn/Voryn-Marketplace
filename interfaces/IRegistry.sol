@@ -16,6 +16,7 @@ interface IRegistry {
 
     error AlreadyRegistered();
     error UnknownInstance();
+    error ZeroAddress();
 
     function registerInstance(address instance, address creator, address implementation, bytes32 kind, uint64 version) external;
     function setActive(address instance, bool active) external;
