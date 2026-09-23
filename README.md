@@ -1,11 +1,11 @@
 <div align="center">
 
-Ali Voryn Protocol
+# Ali Voryn Protocol
 
-A modular Solidity / EVM protocol built around marketplaces, auctions, staking, raffles, treasury accounting, governance, and Chainlink-powered automation.
+**A modular Solidity / EVM protocol for NFT markets, auctions, staking, raffles, treasury accounting, governance, and Chainlink-powered automation.**
 
 <picture>
-  <img src="assets/voryn-protocol.gif" alt="Ali Voryn Protocol animated engineering banner" width="900" />
+     <img src="assets/voryn-protocol.svg" alt="Voryn Protocol technology banner" width="900" />
 </picture>
 
 <br />
@@ -17,11 +17,18 @@ A modular Solidity / EVM protocol built around marketplaces, auctions, staking, 
 
 
 
-Engineering · Verification · Automation · EVM
+<p>
+     <img src="https://img.shields.io/badge/Solidity-0.8.24-363636?logo=solidity&logoColor=white" alt="Solidity 0.8.24" />
+     <img src="https://img.shields.io/badge/Foundry-1.8.3-1f2937?logo=ethereum&logoColor=white" alt="Foundry 1.8.3" />
+     <img src="https://img.shields.io/badge/Chainlink-CRE%20%2B%20VRF-375BD2?logo=chainlink&logoColor=white" alt="Chainlink CRE and VRF" />
+     <img src="https://img.shields.io/badge/OpenZeppelin-5.4.0-4e5d94?logo=openzeppelin&logoColor=white" alt="OpenZeppelin 5.4.0" />
+</p>
+
+`Marketplace` · `Auctions` · `Raffles` · `Staking` · `Governance` · `Automation`
 
 </div>
 
-Overview
+## Overview
 
 Ali Voryn Protocol is a production-oriented Solidity/EVM reference implementation designed as a modular protocol suite, not a single-purpose contract.
 
@@ -666,28 +673,6 @@ Preflight checks
 Deployment verification
 
 Mainnet operational procedure is documented in docs/mainnet.md and docs/raffle-mainnet.md.
-
-CI / Repository Quality
-
-GitHub Actions covers the main engineering gates in .github/workflows/ci.yml:
-
-Format
-  ↓
-Lint
-  ↓
-Build + contract sizes
-  ↓
-Full Foundry test suite
-  ↓
-Coverage
-  ↓
-Gas snapshot
-  ↓
-Static analysis (Slither)
-
-A separate manual workflow provides the Chainlink Raffle fork smoke test using repository secrets for the target RPC and deployment configuration.
-
-Dependabot is configured for dependency update visibility.
 
 Engineering Decisions
 

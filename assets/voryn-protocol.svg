@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-label="Voryn Protocol technology banner">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#0b1220"/><stop offset="1" stop-color="#17243a"/></linearGradient>
+    <style>.title{font:700 35px Georgia,serif;fill:#f8fafc}.sub{font:500 16px monospace;fill:#a9b8cc}.label{font:700 15px monospace;fill:#f8fafc}.version{font:500 12px monospace;fill:#cbd5e1}.card{stroke:#ffffff22;stroke-width:1}</style>
+  </defs>
+  <rect width="1200" height="300" rx="22" fill="url(#bg)"/>
+  <text x="56" y="64" class="title">Ali Voryn Protocol</text><text x="58" y="93" class="sub">MODULAR NFT MARKETPLACE · EVM INFRASTRUCTURE · AUTOMATION</text>
+  <g transform="translate(56 132)"><rect width="165" height="104" rx="16" fill="#363636" class="card"/><circle cx="48" cy="48" r="28" fill="#627eea"/><path d="m48 25 17 27-17 10-17-10Z" fill="#fff" opacity=".95"/><path d="m48 68 17-10-17 17-17-17Z" fill="#fff" opacity=".7"/><text x="88" y="48" class="label">SOLIDITY</text><text x="88" y="70" class="version">0.8.24</text></g>
+  <g transform="translate(239 132)"><rect width="165" height="104" rx="16" fill="#1f2937" class="card"/><circle cx="48" cy="48" r="28" fill="#f5f5f5"/><path d="M33 43h30v8H33Zm7-13h16v8H40Zm0 31h16v8H40Z" fill="#111827"/><text x="88" y="48" class="label">FOUNDRY</text><text x="88" y="70" class="version">1.8.3</text></g>
+  <g transform="translate(422 132)"><rect width="165" height="104" rx="16" fill="#375bd2" class="card"/><circle cx="48" cy="48" r="28" fill="#fff"/><path d="M48 24c-12 0-22 9-22 20 0 7 4 13 10 17l-3 12 15-8 15 8-3-12c6-4 10-10 10-17 0-11-10-20-22-20Z" fill="#375bd2"/><text x="88" y="48" class="label">CHAINLINK</text><text x="88" y="70" class="version">CRE + VRF</text></g>
+  <g transform="translate(605 132)"><rect width="165" height="104" rx="16" fill="#4e5d94" class="card"/><circle cx="48" cy="48" r="28" fill="#fff"/><path d="M34 37h28v9H34Zm5 14h18v9H39Z" fill="#4e5d94"/><text x="88" y="48" class="label">OPENZEPPELIN</text><text x="88" y="70" class="version">5.4.0</text></g>
+  <g transform="translate(788 132)"><rect width="165" height="104" rx="16" fill="#243447" class="card"/><circle cx="48" cy="48" r="28" fill="#6be5c4"/><path d="M48 28 66 38v20L48 68 30 58V38Z" fill="none" stroke="#10202c" stroke-width="5"/><text x="88" y="48" class="label">EVM</text><text x="88" y="70" class="version">PROTOCOL CORE</text></g>
+  <g transform="translate(971 132)"><rect width="173" height="104" rx="16" fill="#3178c6" class="card"/><circle cx="48" cy="48" r="28" fill="#fff"/><text x="30" y="57" font-size="25" font-weight="700" font-family="Arial" fill="#3178c6">TS</text><text x="88" y="48" class="label">TYPESCRIPT</text><text x="88" y="70" class="version">CRE WORKFLOW</text></g>
+</svg>
