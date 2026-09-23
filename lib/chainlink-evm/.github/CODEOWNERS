@@ -1,0 +1,80 @@
+# CODEOWNERS Best Practices
+# 1. Per Github docs: "Order is important; the last matching pattern takes the most precedence."
+# Please define less specific codeowner paths before more specific codeowner paths in order for the more specific rule to have priority
+# 2. Per Github docs:
+# "create a new file called CODEOWNERS in the .github/, root, or docs/ directory of the repository...
+# ...GitHub will search for them in that order and use the first one it finds."
+# Please put the CODEOWNERS file in .github
+
+# Root
+* @smartcontractkit/foundations @smartcontractkit/core @smartcontractkit/bix-framework @smartcontractkit/core-solidity
+
+# Contracts catch all, for files not matched by the more specific patterns below
+/contracts/ @smartcontractkit/core-solidity
+
+# First we match on project names to catch files like the compilation scripts and other files
+# not placed in the project directories. This could give some false positives, so afterwards
+# we match on the project directories to ensure the entire directory is always owned by the
+# correct team.
+/contracts/**/*keeper* @smartcontractkit/dev-services
+/contracts/**/*upkeep* @smartcontractkit/dev-services
+/contracts/**/*automation* @smartcontractkit/dev-services
+/contracts/**/*functions* @smartcontractkit/dev-services
+/contracts/**/*l2ep* @smartcontractkit/bix-ship
+/contracts/**/*llo-feeds* @smartcontractkit/data-streams-engineers
+/contracts/**/*operatorforwarder* @smartcontractkit/data-feeds-engineers
+/contracts/**/*data-feeds* @smartcontractkit/data-feeds-engineers
+/contracts/**/*vrf* @smartcontractkit/dev-services
+/contracts/**/*keystone* @smartcontractkit/keystone
+/contracts/**/*workflow* @smartcontractkit/dev-services
+
+/contracts/src/v0.8/automation @smartcontractkit/dev-services
+/contracts/src/v0.8/functions @smartcontractkit/dev-services
+/contracts/src/v0.8/l2ep @smartcontractkit/bix-build
+/contracts/src/v0.8/llo-feeds @smartcontractkit/data-streams-engineers
+# TODO: mocks folder, folder should be removed and files moved to the correct folders
+/contracts/src/v0.8/operatorforwarder @smartcontractkit/data-feeds-engineers
+/contracts/src/v0.8/data-feeds @smartcontractkit/data-feeds-engineers
+/contracts/src/v0.8/shared @smartcontractkit/core-solidity
+/contracts/src/v0.8/vrf @smartcontractkit/dev-services
+/contracts/src/v0.8/keystone @smartcontractkit/keystone
+/contracts/src/v0.8/workflow @smartcontractkit/dev-services
+
+/gethwrappers/functions @smartcontractkit/dev-services
+/gethwrappers/keystone @smartcontractkit/keystone
+/gethwrappers/llo-feeds @smartcontractkit/data-streams-engineers
+/gethwrappers/operatorforwarder @smartcontractkit/data-feeds-engineers
+/gethwrappers/data-feeds @smartcontractkit/data-feeds-engineers
+/gethwrappers/shared @smartcontractkit/core-solidity
+/gethwrappers/workflow @smartcontractkit/dev-services
+
+# The following don't exist yet but should. They are already included here to allow the teams to
+# set these folders up and own them immediately.
+/gethwrappers/keeper @smartcontractkit/dev-services
+/gethwrappers/upkeep @smartcontractkit/dev-services
+/gethwrappers/automation @smartcontractkit/dev-services
+/gethwrappers/l2ep @smartcontractkit/bix-ship
+/gethwrappers/vrf @smartcontractkit/dev-services
+
+# Remove changeset files from the codeowners
+/contracts/.changeset
+# Gas snapshots are always checked by the CI so they don't need codeowners.
+/contracts/gas-snapshots
+
+# At the end, match any files missed by the patterns above
+/contracts/scripts/native_solc_compile_all_events_mock @smartcontractkit/dev-services
+
+# CI/CD
+/.github/** @smartcontractkit/devex-cicd @smartcontractkit/devex-tooling @smartcontractkit/core @smartcontractkit/core-solidity
+/.github/CODEOWNERS @smartcontractkit/core @smartcontractkit/foundations @smartcontractkit/core-solidity
+/.github/workflows/*solidity* @smartcontractkit/devex-cicd @smartcontractkit/devex-tooling @smartcontractkit/core-solidity
+
+# Dependencies
+contracts/scripts/requirements.txt @smartcontractkit/core @smartcontractkit/core-solidity
+contracts/package.json @smartcontractkit/foundations @smartcontractkit/core @smartcontractkit/core-solidity
+contracts/pnpm.lock @smartcontractkit/core @smartcontractkit/core-solidity
+go.mod @smartcontractkit/core @smartcontractkit/foundations @smartcontractkit/core-solidity
+go.sum @smartcontractkit/core @smartcontractkit/foundations @smartcontractkit/core-solidity
+
+pkg/txm @dimriou @smartcontractkit/bix-framework @smartcontractkit/core
+pkg/bindings @smartcontractkit/bix-framework

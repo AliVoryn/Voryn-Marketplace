@@ -1,0 +1,5 @@
+WorkflowRegistry.getMaxWorkflowsPerDON
+├── When donFamily has never been configured
+│   └── It should return 0
+└── When donFamily was configured to limit
+    └── It should return limit

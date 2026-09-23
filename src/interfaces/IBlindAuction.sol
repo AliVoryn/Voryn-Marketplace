@@ -1,4 +1,6 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
+
 interface IBlindAuction {
     enum Phase {
         Bidding,
@@ -7,6 +9,7 @@ interface IBlindAuction {
         Ended,
         Cancelled
     }
+
     struct Bid {
         bytes32 blindedBid;
         uint256 deposit;
@@ -19,6 +22,7 @@ interface IBlindAuction {
     event AuctionCancelled(address indexed by, uint256 timestamp);
     event Withdrawn(address indexed bidder, uint256 amount);
     event CancelledRefund(address indexed bidder, uint256 amount);
+    event UnrevealedWithdrawn(address indexed bidder, uint256 amount);
     error InvalidPhase(Phase current, Phase required);
     error ZeroAddress();
     error InvalidTimes();
@@ -27,6 +31,7 @@ interface IBlindAuction {
     error NothingToWithdraw();
     error TransferFailed();
     error AlreadyFinalized();
+    error SellerCannotBid();
     error DirectPaymentNotAllowed();
     function placeBid(bytes32 _blindedBid) external payable;
     function computeBlindedBid(uint256 _value, bool _fake, bytes32 _secret) external pure returns (bytes32);
@@ -35,6 +40,7 @@ interface IBlindAuction {
     function withdraw() external;
     function cancelAuction() external;
     function withdrawIfCancelled() external;
+    function withdrawUnrevealed() external;
     function pause() external;
     function unpause() external;
     function currentPhase() external view returns (Phase);
@@ -51,4 +57,5 @@ interface IBlindAuction {
     function getMyBidCount() external view returns (uint256);
     function getBidCount(address _bidder) external view returns (uint256);
     function getPendingReturn(address _bidder) external view returns (uint256);
+    function totalUnrevealedDeposits() external view returns (uint256);
 }

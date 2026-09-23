@@ -1,0 +1,242 @@
+[
+  {
+    "filename": "../../src/core/Marketplace.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/core/OpenAuction.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/core/BlindAuction.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/core/DutchAuction.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/core/Raffle.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/core/Staking.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/core/Treasury.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/core/PaymentManager.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/factory/ProtocolFactory.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  },
+  {
+    "filename": "../../src/registries/ProtocolRegistry.sol",
+    "sourceroot": "../..",
+    "solc": "solc",
+    "solc_base_path": "../..",
+    "solc_include_path": "../../lib",
+    "solc_remappings": [
+      "@openzeppelin/contracts/=../../lib/openzeppelin-contracts/contracts/",
+      "@openzeppelin/contracts-upgradeable/=../../lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@chainlink/=../../lib/chainlink-evm/",
+      "forge-std/=../../lib/forge-std/src/"
+    ],
+    "mutations": [
+      "binary-op-mutation",
+      "unary-operator-mutation",
+      "require-mutation",
+      "assignment-mutation",
+      "delete-expression-mutation",
+      "if-cond-mutation",
+      "elim-delegate-mutation"
+    ],
+    "solc_optimize": true,
+    "no_overwrite": true
+  }
+]

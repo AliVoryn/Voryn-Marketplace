@@ -1,808 +1,834 @@
-🏪 Voryn Marketplace Protocol
+<div align="center">
 
-<p>
-  <strong>Modular on-chain marketplace infrastructure for NFT trading, auctions, staking, treasury accounting, and protocol deployment.</strong>
-</p>
+Ali Voryn Protocol
 
-<p>
-  Built with Solidity <strong>0.8.24</strong> and OpenZeppelin contracts, with explicit state machines,
-  escrowed value flows, signed listings, upgradeable marketplace infrastructure, protocol registries,
-  and deployable protocol components.
-</p>
+A modular Solidity / EVM protocol built around marketplaces, auctions, staking, raffles, treasury accounting, governance, and Chainlink-powered automation.
 
-<p>
-  <a href="https://www.soliditylang.org/"><img src="https://img.shields.io/badge/Solidity-0.8.24-363636?logo=solidity&logoColor=white" alt="Solidity 0.8.24"></a>
-  <a href="https://docs.openzeppelin.com/contracts/5.x/"><img src="https://img.shields.io/badge/OpenZeppelin-Contracts-4E5EE4?logo=openzeppelin&logoColor=white" alt="OpenZeppelin Contracts"></a>
-  <a href="https://eips.ethereum.org/EIPS/eip-712"><img src="https://img.shields.io/badge/EIP--712-Signed%20Orders-627EEA?logo=ethereum&logoColor=white" alt="EIP-712"></a>
-  <a href="https://docs.openzeppelin.com/contracts/5.x/api/proxy#UUPSUpgradeable"><img src="https://img.shields.io/badge/UUPS-Upgradeable-6E56CF" alt="UUPS Upgradeable"></a>
-  <a href="https://docs.openzeppelin.com/contracts/5.x/api/proxy#ERC1967Proxy"><img src="https://img.shields.io/badge/ERC--1967-Proxy-627EEA?logo=ethereum&logoColor=white" alt="ERC-1967"></a>
-  <a href="https://remix.ethereum.org/"><img src="https://img.shields.io/badge/Remix-Ready-00B0D8?logo=remix&logoColor=white" alt="Remix"></a>
-</p>
+<picture>
+  <img src="assets/voryn-protocol.gif" alt="Ali Voryn Protocol animated engineering banner" width="900" />
+</picture>
+
+<br />
+
+
+
+
+
+
+
+
+Engineering · Verification · Automation · EVM
 
 </div>
 
-📖 Overview
+Overview
 
-Voryn Marketplace Protocol is a modular Ethereum smart-contract system for building an on-chain marketplace around NFT assets and related protocol infrastructure.
+Ali Voryn Protocol is a production-oriented Solidity/EVM reference implementation designed as a modular protocol suite, not a single-purpose contract.
 
-The system separates trading, auctions, staking, payment accounting, treasury management, governance primitives, deployment, and registry responsibilities into dedicated contracts and libraries.
+The codebase brings together:
 
-At its core, the protocol provides:
+NFT issuance and ERC-721 behavior
 
-NFT creation and ownership management
+Primary marketplace listings and offers
 
-Fixed-price marketplace listings
+Open, blind commit-reveal, and Dutch auctions
 
-Escrowed buyer offers
+Treasury and payment accounting
 
-EIP-712 signed listings
+Staking and reward distribution
 
-Open English-style auctions
+Chainlink VRF-backed raffles
 
-Blind commit-reveal auctions
+Factory-based protocol composition and deterministic deployment paths
 
-Dutch price-decreasing auctions
+Registry and protocol governance primitives
 
-Native ETH staking and reward programs
+Upgradeable marketplace infrastructure
 
-Treasury-backed protocol accounting
+Chainlink CRE automation with bounded discovery and a fail-closed receiver layer
 
-Claim-based payment settlement
+Stateful invariants, fuzzing, security, integration, fork, regression, upgrade, conformance, mutation, and symbolic verification
 
-Protocol instance deployment through a factory
+Reproducible deployment and post-deployment verification workflows
 
-On-chain registration and indexing of deployed instances
+Security status: this repository is a production-oriented engineering reference implementation. It is not presented as an independently audited mainnet release. External security review, target-chain integration validation, operational review, and staged deployment remain release gates.
 
-Role-based administration and timelock/governance primitives
+Protocol Architecture
 
-UUPS-upgradeable marketplace infrastructure
+flowchart TB
+    G[ProtocolTimelock / Governance]
+    F[ProtocolFactory]
+    R[ProtocolRegistry]
 
-🧩 Protocol Modules
+    T[Treasury]
+    PM[PaymentManager]
+    M[Upgradeable Marketplace]
+    OA[Open Auction]
+    BA[Blind Auction]
+    DA[Dutch Auction]
+    S[Staking]
+    N[CustomNFT]
+    RA[Raffle]
+
+    CR[Chainlink CRE Workflow]
+    AR[ProtocolAutomationReceiver]
+    VRF[Chainlink VRF V2.5]
+
+    G --> F
+    G --> M
+    G --> T
+    G --> PM
+    G --> OA
+    G --> BA
+    G --> DA
+    G --> S
+    G --> RA
+    G --> R
+
+    F --> R
+    F --> T
+    F --> PM
+    F --> M
+    F --> OA
+    F --> BA
+    F --> DA
+    F --> S
+    F --> N
+    F --> RA
+
+    M --> T
+    M --> PM
+    OA --> T
+    BA --> T
+    DA --> T
+    S --> T
+    RA --> T
+
+    VRF --> RA
+    CR --> AR
+    AR --> OA
+    AR --> BA
+    AR --> DA
+    AR --> M
+    AR --> RA
+    R --> AR
+
+The architecture intentionally separates protocol domains, shared accounting, deployment/registration, governance, and external automation. Core contracts do not need to know about the CRE workflow layer; automation discovers eligible work through bounded on-chain views and submits validated reports through the receiver.
+
+Core Features
 
 🛒 Marketplace
 
-core/Marketplace.sol
+Listings with creation, update, cancellation, and expiry flows
 
-The Marketplace is the main trading layer and is deployed behind an ERC-1967 proxy using the UUPS upgradeability pattern.
+Direct purchases with escrow-aware settlement
 
-Listings
+Offers with accept, reject, cancel, and expiry paths
 
-Create listings for supported NFT assets
+Signed listing execution using EIP-712 typed data
 
-Update listing price and expiry
+Seller nonces for replay protection
 
-Cancel individual listings
+Protocol, minimum, and account-specific fee configuration
 
-Batch-cancel listings
+Treasury and PaymentManager integration
 
-Expire stale listings
+UUPS upgradeability with role-gated authorization
 
-Buy active listings with native ETH
+Pausing and operator controls
 
-Track listing ownership and state
-
-Offers
-
-Make escrowed buyer offers
-
-Cancel offers
-
-Expire offers
-
-Accept offers and settle seller proceeds
-
-Reject offers and return escrowed value
-
-Track buyer offer indexes
-
-Enforce offer lifecycle states
-
-Signed Listings
-
-The marketplace supports off-chain signed listing orders using EIP-712 typed data.
-
-The implementation includes:
-
-Domain separation
-
-Structured order hashing
-
-Per-account nonces
-
-Nonce invalidation
-
-Signature validation
-
-Replay protection
-
-Signature deadline validation
-
-Administration
-
-Marketplace administration includes:
-
-Protocol fee configuration
-
-Minimum fee configuration
-
-Per-account custom fee tiers
-
-Treasury configuration
-
-Payment manager configuration
-
-Pause/unpause controls
-
-Role-gated UUPS upgrade authorization
+Bounded automation discovery for expiring offers
 
 🔨 Open Auction
 
-core/OpenAuction.sol
+Reserve prices and minimum bid increments
 
-A time-based auction module for competitive native-ETH bidding.
+Scheduled start and explicit lifecycle phases
 
-Supported behavior includes:
+Bid history and buyout support
 
-Configurable reserve price
-
-Minimum bid increments
-
-Scheduled auction start
-
-Auction duration
-
-Bid history
-
-Buyout configuration and execution
-
-Auction extension near the deadline
-
-Finalization and settlement
-
-Seller cancellation
-
-Bid refund accounting
-
-Pull-based refund withdrawal
-
-Protocol fee settlement through the treasury
-
-Escrow liability tracking
-
-Escrow invariant checks
-
-Auction timing and bidding calculations are separated into reusable libraries.
-
-🕵️ Blind Auction
-
-core/BlindAuction.sol
-
-A commit-reveal auction module that keeps bid values hidden during the bidding phase.
-
-The lifecycle is divided into:
-
-Bidding
-   ↓
-Reveal
-   ↓
-Awaiting Finalization
-   ↓
-Ended
-
-Supported behavior includes:
-
-Blinded bid commitments
-
-Multiple bids per bidder with bounded bid count
-
-Commit-reveal validation
-
-Fake-bid support
-
-Deposit-based escrow
-
-Highest revealed bid tracking
-
-Reveal-period extensions
-
-Reserve-price validation
+Seller/owner cancellation with refund accounting
 
 Pull-based refunds
 
-Cancellation and cancellation refunds
+Escrow solvency invariant
 
-NFT escrow and release
+Automation discovery for auctions that require lifecycle finalization
 
-Seller proceeds and protocol fee settlement
+🕵️ Blind Auction
 
-Escrow invariant checks
+Commit-reveal bidding
+
+Commitment hashing with value/fake/secret parameters
+
+One-time commitment enforcement to reduce replay/front-run opportunities
+
+Reveal extensions
+
+Unrevealed-deposit accounting
+
+Pending-return accounting
+
+Seller proceeds and fee settlement
+
+Cancellation recovery path
+
+Explicit phase model and automation readiness
+
+Escrow invariant tracking
 
 📉 Dutch Auction
 
-core/DutchAuction.sol
+Time-decaying price model
 
-A price-decreasing auction where the asset starts at a configured price and moves linearly toward a lower final price over time.
+Purchases at or above the current price
 
-Supported behavior includes:
+Current-price calculation from the auction schedule
 
-Configurable start and end price
+Excess-payment refunding
 
-Scheduled or immediate activation
+Explicit cancellation and expiry flows
 
-Deterministic time-based price calculation
+Automation discovery for expired auctions
 
-Exact-price purchase execution
+🎟️ Raffle + Chainlink VRF
 
-NFT escrow
+Ticket purchasing with entrant accounting
 
-Protocol fee settlement
+Chainlink VRF V2.5 random-winner flow
 
-Seller proceeds settlement through the treasury
+Native or LINK payment configuration
 
-Seller or owner cancellation
+Request binding and callback validation
 
-Expiration and NFT return
+Retry path for stuck randomness requests
 
-Pause/unpause controls
+Controlled stuck-raffle cancellation
 
-Price calculation uses OpenZeppelin Math.mulDiv for deterministic proportional arithmetic.
+Batched refund processing
 
-🎨 Custom NFT
+Failed-raffle finalization
 
-core/CustomNFT.sol
+Creator/buyer refund claims
 
-A protocol-specific NFT contract implementing ownership, balances, approvals, transfers, metadata, and minting controls.
+Bounded automation candidate discovery
 
-Features include:
+Fork coverage for external VRF integration
 
-Role-based minting
+🪙 Staking
 
-Batch minting with a bounded batch size
-
-Maximum supply
-
-Per-wallet mint limits
-
-Scheduled mint windows
-
-Token-level metadata
-
-Base URI configuration
-
-Standard approval and operator approval flows
-
-Safe transfer receiver checks
-
-Owner token enumeration
-
-Burning
-
-Pause/unpause controls
-
-Roles include:
-
-DEFAULT_ADMIN_ROLE
-MINTER_ROLE
-OPERATOR_ROLE
-METADATA_ROLE
-
-🥩 Staking & Rewards
-
-core/Staking.sol
-
-A native-ETH staking module with scheduled reward programs and explicit user accounting.
-
-Supported flows include:
-
-Stake ETH
-
-Partial unstake
-
-Claim rewards
-
-Compound rewards
-
-Emergency unstake
-
-Configurable minimum and maximum stake bounds
-
-Unstaking cooldowns
-
-Emergency penalties
-
-Reward funding
-
-Treasury-funded reward transfers
+Reward funding from the contract or treasury
 
 Scheduled reward programs
 
-Reward phases
+Time-bounded reward phases
 
-Reward inventory accounting
+Stake / unstake flows with accounting boundaries
 
-Global reward-per-token accounting
+Claimable rewards
 
-Reward calculations are isolated in RewardMath.
+Reward compounding
+
+Cooldown handling
+
+Emergency unstake path
+
+Configurable minimum/maximum stake bounds
+
+Configurable emergency penalty
+
+Reward inventory tracking
+
+Stateful reward/accounting invariants
+
+🖼️ Custom NFT
+
+ERC-721-compatible token behavior
+
+Single and batch minting
+
+Wallet mint limits
+
+Time-windowed mint phases
+
+Burn support
+
+Token URI and base URI management
+
+Role-based minting and metadata administration
+
+Safe transfer handling through IERC721Receiver
+
+ERC-165 / ERC-721 / ERC-721 Metadata conformance
+
+Pause controls and operator authorization
 
 🏦 Treasury
 
-core/Treasury.sol
+Authorized payer model
 
-The Treasury provides the protocol's controlled ETH accounting and payment boundary.
+Claimable balances
 
-It separates recorded liabilities from available funds and supports:
+Fee-recipient accounting
 
-Claimable user balances
+Spending windows and daily limits
 
-Authorized protocol payers
+Remaining allowance tracking
 
-Protocol fee configuration
+Protocol liabilities / available-balance accounting
 
-Fee recipient configuration
-
-Controlled outbound payments
-
-Per-payer daily spending limits
-
-Remaining daily allowance tracking
+Emergency rescue path
 
 Pull-based claim withdrawals
 
-Available-balance calculation
+💳 Payment Manager
 
-Emergency rescue of uncommitted ETH
+Authorized creditor model
 
-The accounting boundary is conceptually:
+Credit accounting by reason
 
-Actual ETH balance
-        -
-Recorded liabilities
-        =
-Available balance
-
-💰 Payment Manager
-
-core/PaymentManager.sol
-
-A lightweight claim-based payment accounting layer used by protocol components that need to credit and later release ETH to users.
-
-Supported behavior includes:
-
-Authorized creditors
-
-User credit balances
+Claimable balances
 
 Pull-based withdrawals
 
-Claimable balance tracking
+Factory-controller lifecycle
 
 Reentrancy protection
 
-Explicit prevention of unsolicited direct payments
-
 🏭 Protocol Factory
 
-factory/ProtocolFactory.sol
+Modular deployment of the protocol suite
 
-The factory acts as the deployment and composition layer for protocol instances.
+Dedicated deployer libraries for core components
 
-It can create:
+Protocol-wide creation flow
 
-Treasury instances
+Custom NFT deployment and deterministic address prediction paths
 
-Payment Manager instances
+Auction, staking, raffle, marketplace, treasury, and payment-manager instantiation
 
-Marketplace proxy instances
+Registry registration
 
-Custom NFT instances
+Creator instance indexing
 
-Deterministic Custom NFT instances
+Ownership/controller finalization
 
-Open Auction instances
+Treasury-authority checks around dependent deployments
 
-Blind Auction instances
+📚 Registry
 
-Dutch Auction instances
+Instance registration and validation
 
-Staking instances
+Registrar authorization
 
-Complete protocol suites
+Active/inactive lifecycle
 
-The factory also:
+Global, per-kind, and per-creator indexing
 
-Connects deployed components to their required infrastructure
+Automation-specific instance discovery
 
-Authorizes protocol components with treasury/payment contracts
+Cycle-aware bounded enumeration for off-chain workflows
 
-Registers deployed instances
+🏛️ Governance
 
-Tracks instances by creator
+OpenZeppelin TimelockController based protocol control plane
 
-Supports deterministic NFT deployment using creator-namespaced salts
+Two-step ownership handoff patterns across critical contracts
 
-Predicts deterministic NFT addresses
+Governance-aware factory finalization
 
-📚 Protocol Registry
+Explicit separation between bootstrap authority and long-term protocol authority
 
-registries/ProtocolRegistry.sol
+Scripts for scheduling and executing governance ownership acceptance
 
-The registry maintains an on-chain index of deployed protocol instances.
+Chainlink CRE Automation
 
-Each instance record contains:
+The automation layer is designed as a separate execution boundary around the protocol.
 
-instance
-implementation
-creator
-kind
-version
-active
+Cron Trigger
+     ↓
+CRE Workflow
+     ↓
+Bounded On-chain Discovery
+     ↓
+Validated Action Report
+     ↓
+KeystoneForwarder
+     ↓
+ProtocolAutomationReceiver
+     ↓
+Protocol Domain Function
 
-Instances can be indexed by:
+Automated protocol actions
 
-Global instance set
+Domain
 
-Protocol kind
+Automated action
 
-Creator
+Open Auction
 
-Registrar authorization is separated from registry ownership so protocol deployment can register instances without exposing registry administration broadly.
+finalizeAuction(uint256)
 
-🔐 Governance & Access
+Blind Auction
 
-governance/ProtocolGovernance.sol
+finalizeAuction()
 
-The protocol includes governance primitives built on OpenZeppelin:
+Dutch Auction
 
-ProtocolAccessManager → AccessManager
+expireAuction(uint256)
 
-ProtocolTimelock → TimelockController
-
-Individual protocol components additionally use:
-
-Ownable2Step
-
-AccessControl
-
-Role-specific permissions
-
-Pause controls
-
-Authorized payer/creditor boundaries
-
-These primitives provide the building blocks for controlled administrative execution and delayed governance actions.
-
-🏗️ Architecture
-
-                              ┌──────────────────────┐
-                              │       Protocol User   │
-                              └──────────┬───────────┘
-                                         │
-                                         ▼
-                              ┌──────────────────────┐
-                              │    Protocol Factory   │
-                              └──────────┬───────────┘
-                                         │
-          ┌──────────────────────────────┼──────────────────────────────┐
-          │                              │                              │
-          ▼                              ▼                              ▼
-   ┌───────────────┐             ┌───────────────┐              ┌──────────────┐
-   │  Marketplace  │             │    Auctions   │              │   Staking    │
-   └───────┬───────┘             └───────┬───────┘              └──────┬───────┘
-           │                             │                             │
-           └─────────────────────────────┼─────────────────────────────┘
-                                         │
-                                         ▼
-                              ┌──────────────────────┐
-                              │       Treasury       │
-                              └──────────┬───────────┘
-                                         │
-                               ┌─────────┴─────────┐
-                               ▼                   ▼
-                        Seller/User Claims   Protocol Fees
-
-                  ┌──────────────────────┐
-                  │    Payment Manager   │
-                  └──────────────────────┘
-
-                  ┌──────────────────────┐
-                  │   Protocol Registry  │
-                  └──────────────────────┘
-
-                  ┌──────────────────────┐
-                  │  Governance Layer    │
-                  │ AccessManager /      │
-                  │ TimelockController   │
-                  └──────────────────────┘
-
-🔄 Core Value Flows
-
-Fixed-Price Sale
-
-Buyer
-  │
-  │ ETH
-  ▼
 Marketplace
-  │
-  ├── protocol fee ──────► Treasury
-  │
-  └── seller proceeds ───► Treasury claim
 
-Escrowed Offer
+expireOffer(uint256)
 
-Buyer
-  │
-  │ ETH
-  ▼
-Marketplace Escrow
-  │
-  ├── Accepted ───► seller proceeds + protocol fee
-  ├── Cancelled ──► buyer claim
-  ├── Expired ────► buyer claim
-  └── Rejected ───► buyer claim
+Raffle
 
-Auction Settlement
+requestRandomWinner(uint256)
 
-Bid / Purchase
-      │
-      ▼
-Auction Contract
-      │
-      ├── protocol fee ─────► Treasury
-      ├── seller proceeds ───► Treasury
-      └── NFT ───────────────► buyer / seller on finalization
+Raffle
 
-🧮 Accounting & State Design
+processRaffleRefunds(uint256,uint256)
 
-Value-moving modules use explicit state and liability accounting rather than relying solely on contract ETH balances.
+Raffle
 
-Important protocol concepts include:
+finalizeFailedRaffle(uint256)
 
-Listing lifecycle states
+The receiver layer is intentionally fail-closed. The repository adds explicit action allowlisting, workflow identity validation, target-kind validation, replay/staleness protection, refund-cursor protection, and schedule/value validation. Simulation uses a dedicated receiver so real workflow metadata requirements are not weakened for production.
 
-Offer lifecycle states
+The workflow also uses bounded discovery rather than unbounded per-ID reads. The repository's automation documentation fixes the execution model to one selected protocol instance per kind per run and documents the read-budget, rotation, partitioning, and gas-budget model.
 
-Auction phases and statuses
+Official Chainlink CRE documentation: https://docs.chain.link/cre
 
-Staking reward phases
+Verification Strategy
 
-Claimable liabilities
+Verification is intentionally layered. A test exists to specify a behavior or property—not merely to increase coverage.
 
-Refund liabilities
-
-Protocol fee splits
-
-Per-payer spending limits
-
-Nonce-based order replay protection
-
-For treasury-backed flows, user or protocol liabilities are accounted for separately from immediately available funds.
-
-📐 Reusable Libraries
-
-Calculation-heavy logic is extracted from stateful contracts into focused libraries.
-
-Library
-
-Responsibility
-
-AccountingMath
-
-Liability-aware available-balance calculations
-
-AuctionMath
-
-Minimum bid and auction extension calculations
-
-AuctionPhaseLib
-
-Blind-auction phase and deadline management
-
-FeeMath
-
-Protocol fee and seller-proceeds splitting
-
-ListingMath
-
-Listing expiry and activity checks
-
-OrderHashLib
-
-EIP-712 listing-order struct hashing
-
-PhaseLogic
-
-Generic deadline/window calculations
-
-RewardMath
-
-Reward-per-token and user reward calculations
-
-This separation keeps financial formulas, timing rules, and protocol state transitions easier to reason about and reuse.
-
-🗂️ Repository Structure
-
-core/
-├── BlindAuction.sol
-├── CustomNFT.sol
-├── DutchAuction.sol
-├── Marketplace.sol
-├── OpenAuction.sol
-├── PaymentManager.sol
-├── Staking.sol
-└── Treasury.sol
-
-factory/
-└── ProtocolFactory.sol
-
-governance/
-└── ProtocolGovernance.sol
-
-interfaces/
-├── IAuction.sol
-├── IBlindAuction.sol
-├── ICustomNFT.sol
-├── ICustomNFTReceiver.sol
-├── IDutchAuction.sol
-├── IFactory.sol
-├── IMarketplace.sol
-├── IPaymentManager.sol
-├── IRegistry.sol
-├── IStaking.sol
-├── ITreasury.sol
-└── IUpgradeableSystem.sol
-
-libraries/
-├── AccountingMath.sol
-├── AuctionMath.sol
-├── AuctionPhaseLib.sol
-├── FeeMath.sol
-├── ListingMath.sol
-├── OrderHashLib.sol
-├── PhaseLogic.sol
-└── RewardMath.sol
-
-proxy/
-└── interfaces/
-    └── IUpgradeableSystem.sol
-
-registries/
-└── ProtocolRegistry.sol
-
-🧰 Technology Stack
+Foundry test model
 
 Layer
 
-Technology
+Purpose
 
-Smart contracts
+Unit
 
-Solidity ^0.8.24
+Deterministic contract behavior
 
-Standard library
+Integration
+
+Multi-contract protocol flows
+
+Fuzz
+
+Input-space exploration and edge cases
+
+Invariant
+
+Stateful protocol properties and accounting conservation
+
+Security
+
+Access control, replay, reentrancy, lifecycle, and failure-path checks
+
+Regression
+
+Previously identified failures remain fixed
+
+Fork
+
+Live external protocol behavior and target-chain assumptions
+
+Upgrade
+
+Upgradeability and implementation transitions
+
+Conformance
+
+ERC/interface behavior
+
+Deployment
+
+Wiring and deployed-system assumptions
+
+The final engineering review in this repository records 79 *.t.sol suites, 581 test functions, and 14 invariant functions, for 595 combined verification entry points.
+
+Meta-level verification
+
+verification/
+├── mutation/
+│   ├── gambit.json
+│   └── run.sh
+└── symbolic/
+    ├── AuctionMathHarness.sol
+    ├── FeeMathHarness.sol
+    ├── RewardMathHarness.sol
+    └── run.sh
+
+Mutation testing evaluates whether tests detect controlled source changes.
+
+Symbolic harnesses target high-value arithmetic and monotonicity properties through Solidity's SMT tooling.
+
+Neither layer replaces behavioral, fuzz, invariant, integration, fork, deployment, or security testing.
+
+Repository Structure
+
+.
+├── .github/
+│   └── workflows/                 # CI + manual fork smoke workflow
+├── src/
+│   ├── core/                      # Marketplace, auctions, raffle, staking, treasury, NFT, etc.
+│   ├── automation/                # Chainlink automation receiver boundary
+│   ├── automation/chainlink/      # Receiver template + interfaces
+│   ├── factory/                   # Protocol factory + dedicated deployers
+│   ├── governance/                # Timelock governance primitive
+│   ├── interfaces/                # Protocol interfaces
+│   ├── libraries/                 # Shared math, phases, fees, hashes, scanning
+│   ├── proxy/                     # Upgrade-related interfaces
+│   └── registries/                # Protocol registry
+├── test/                          # Domain-first verification tree
+│   ├── auctions/
+│   ├── automation/
+│   ├── factory/
+│   ├── governance/
+│   ├── libraries/
+│   ├── marketplace/
+│   ├── nft/
+│   ├── payment/
+│   ├── protocol/
+│   ├── raffle/
+│   ├── registry/
+│   ├── staking/
+│   ├── support/
+│   └── treasury/
+├── cre/
+│   └── protocol-automation/       # Chainlink CRE TypeScript workflow
+├── verification/                  # Mutation + symbolic verification
+├── script/                        # Deployment, governance, VRF, automation, verification
+├── docs/                          # Architecture, test strategy, automation, mainnet runbooks
+├── foundry.toml                   # Foundry configuration
+├── remappings.txt                 # Dependency import mapping
+├── Makefile                       # Reproducible developer commands
+├── SECURITY.md                    # Security reporting policy
+└── LICENSE                        # MIT
+
+Toolchain & Dependency Pins
+
+The project uses explicit versions to make builds reproducible.
+
+Solidity / Foundry
+
+Component
+
+Version
+
+Solidity
+
+0.8.24
+
+Foundry baseline
+
+1.8.3
+
+forge-std
+
+v1.16.2
 
 OpenZeppelin Contracts
 
-Upgradeability
+v5.4.0
 
-UUPS / ERC-1967
+OpenZeppelin Contracts Upgradeable
 
-Signed orders
+v5.4.0
 
-EIP-712 / ECDSA
+Chainlink EVM
 
-Access control
+contracts-v1.5.0
 
-Ownable2Step / AccessControl
+Chainlink CRE workspace
 
-Governance primitives
+Component
 
-AccessManager / TimelockController
+Version
 
-Enumeration
+Node.js
 
-EnumerableSet
+>=22.6.0
 
-Arithmetic
+@chainlink/cre-sdk
 
-OpenZeppelin Math
+1.22.0
 
-Development
+viem
 
-Remix-compatible project configuration
+2.37.6
 
-Settlement asset
+zod
 
-Native ETH
+3.25.76
 
-🛡️ Security-Oriented Design
+TypeScript
 
-The contracts use several defensive patterns throughout the protocol:
+5.9.2
 
-Role-based authorization
+The repository contains script/install-dependencies.sh to install the pinned Foundry dependencies. The project intentionally keeps dependency installation reproducible rather than relying on moving development branches.
 
-Two-step ownership transfers where applicable
+Getting Started
 
-Reentrancy protection on value-moving operations
+Requirements
 
-Pausable execution paths
+Foundry
 
-Zero-address validation
+Node.js >=22.6.0 for the CRE workspace
 
-Explicit lifecycle/state checks
+Git
 
-Expiry validation
+A configured RPC endpoint for fork/deployment workflows
 
-EIP-712 domain separation
+Install
 
-Nonce invalidation and replay protection
+cp .env.example .env
+make setup
 
-Pull-based refund and withdrawal flows
+Format, build, test
 
-Treasury liability accounting
+make fmt-check
+make build
+make test
 
-Per-payer spending limits
+Deeper verification
 
-Explicit escrow invariants
+make lint
+make fuzz
+make invariant
+make coverage
+make snapshot
 
-Seller ownership checks before NFT settlement
+Fork tests
 
-Authorized payer and creditor boundaries
+make fork
 
-These mechanisms are part of the contract design; they are not a substitute for independent testing, formal verification, or security auditing before mainnet use with valuable assets.
+Preflight and deployment verification
 
-🚦 Project Scope
+make preflight
+make verify-deployment
 
-The repository is a smart-contract protocol source tree containing the core contracts, interfaces, reusable libraries, governance wrappers, factory, registry, and proxy interface definitions.
+These commands require an explicit and reviewed RPC_URL plus the environment expected by the deployment scripts. Do not broadcast transactions from an unreviewed environment.
 
-The current source snapshot is intended to represent the protocol implementation itself. Production deployment should be preceded by a complete verification workflow covering compilation, unit tests, integration tests, fuzzing, invariant testing, deployment verification, and independent security review.
+CRE workflow
 
-Recommended verification flow:
+cd cre/protocol-automation
+npm install
+npm test
+npm run typecheck
 
-Compile
+For simulation and deployment sequencing, read cre/protocol-automation/README.md and docs/AUTOMATION.md first.
+
+Deployment Model
+
+Deployment is split by responsibility rather than hiding everything inside one script.
+
+Protocol deployment
+        ↓
+Registry / protocol registration
+        ↓
+Governance deployment
+        ↓
+VRF subscription setup
+        ↓
+Ownership transfer scheduling
+        ↓
+Timelock ownership acceptance
+        ↓
+Factory-controller finalization
+        ↓
+Deployment verification
+        ↓
+Post-deployment smoke tests
+
+Available script responsibilities include:
+
+Protocol deployment
+
+Governance deployment
+
+VRF subscription creation and funding
+
+VRF consumer registration
+
+Automation receiver deployment and configuration
+
+Ownership transfer and Timelock acceptance
+
+Protocol finalization
+
+Preflight checks
+
+Deployment verification
+
+Mainnet operational procedure is documented in docs/mainnet.md and docs/raffle-mainnet.md.
+
+CI / Repository Quality
+
+GitHub Actions covers the main engineering gates in .github/workflows/ci.yml:
+
+Format
   ↓
-Unit Tests
+Lint
   ↓
-Integration Tests
+Build + contract sizes
   ↓
-Fuzz Tests
+Full Foundry test suite
   ↓
-Invariant Tests
+Coverage
   ↓
-Security Review / Audit
+Gas snapshot
   ↓
-Deployment Verification
-  ↓
-Operational Monitoring
+Static analysis (Slither)
 
-🎯 Design Goals
+A separate manual workflow provides the Chainlink Raffle fork smoke test using repository secrets for the target RPC and deployment configuration.
 
-The protocol is built around a small set of engineering goals:
+Dependabot is configured for dependency update visibility.
 
-Explicit State
+Engineering Decisions
 
-Listings, offers, auctions, reward programs, and registry entries use explicit state or phase transitions so important lifecycle conditions remain visible in the contract model.
+Domain-first tests
 
-Separation of Concerns
+Tests are organized around the system or protocol boundary under verification. Methodology appears in the filename (.Unit.t.sol, .Fuzz.t.sol, .Invariant.t.sol, etc.) rather than becoming the primary directory hierarchy.
 
-Trading, NFT custody, auctions, staking, treasury accounting, payments, deployment, registry management, and governance are isolated into dedicated components.
+Invariants as protocol properties
 
-Accountable Value Flows
+The repository checks properties such as escrow solvency, accounting conservation, registry consistency, creator/index consistency, and state-machine correctness across mutable state.
 
-ETH-moving components distinguish user liabilities, protocol fees, seller proceeds, refunds, and available funds so settlement can be reasoned about independently from raw contract balance.
+Bounded automation discovery
 
-Reusable Logic
+Automation discovery surfaces explicitly cap both the scan window and the number of returned actions, allowing off-chain workflows to reason about gas and RPC budgets without iterating through unbounded protocol state.
 
-Financial arithmetic, deadline logic, reward calculations, and order hashing are extracted into dedicated libraries instead of being duplicated across stateful contracts.
+Governance as an actual control plane
 
-Controlled Administration
+The Timelock is treated as a control plane only where ownership/roles actually point at it. The deployment runbook therefore includes explicit ownership acceptance and factory-controller finalization instead of assuming that a deployed Timelock automatically controls the protocol.
 
-Administrative actions are separated through ownership, roles, authorized actors, pause controls, and governance primitives.
+Security Notes
+
+The repository includes a dedicated security policy in SECURITY.md.
+
+Do not commit:
+
+.env
+private keys
+RPC credentials
+API keys
+production secrets
+
+The repository also distinguishes between:
+
+Passing tests
+     ≠
+External security audit
+     ≠
+Target-chain integration verification
+     ≠
+Operational readiness
+
+Before a real mainnet broadcast, the repository's documented release process requires clean-checkout verification, exact dependency installation, build/size gates, tests, fuzzing/invariants, static analysis, mutation and symbolic checks, target-chain fork validation where applicable, source verification, governance handoff verification, VRF consumer registration, and post-deployment smoke tests.
+
+Known Release Considerations
+
+The current repository documentation explicitly calls out several operational boundaries that should be resolved before a production deployment:
+
+After finalizeProtocolSuiteControllers, the Factory can no longer authorize new Treasury payers. The per-NFT createBlindAuctionInstance flow therefore needs a reviewed authorization strategy for a finalized protocol Treasury.
+
+Marketplace offer refunds through cancelOffer / expireOffer are blocked while the Marketplace is paused.
+
+The repository's release documentation requires a final forge fmt pass before the strict formatting CI gate can be considered clean.
+
+A passing local test suite does not substitute for independent review of live Chainlink configuration, target-chain addresses, or production operations.
+
+Documentation Map
+
+Document
+
+Purpose
+
+docs/architecture.md
+
+System boundaries and protocol architecture
+
+docs/test-strategy.md
+
+Verification philosophy and methodology
+
+docs/test-matrix.md
+
+Domain-by-domain test coverage map
+
+docs/AUTOMATION.md
+
+Solidity automation boundary and execution model
+
+cre/protocol-automation/README.md
+
+CRE workflow architecture and deployment sequence
+
+docs/mainnet.md
+
+Mainnet deployment and governance runbook
+
+docs/raffle-mainnet.md
+
+Chainlink VRF mainnet operations
+
+verification/README.md
+
+Mutation and symbolic verification layers
+
+SECURITY.md
+
+Security reporting policy
+
+DEPENDENCIES.md
+
+Dependency provenance and version pins
+
+RELEASE_FILES.md
+
+Release inventory
+
+RELEASE_MANIFEST.md
+
+Release manifest
+
+FINAL_REVIEW.md
+
+Engineering review scope and verification boundaries
+
+CHANGES.md
+
+Refactor, hardening, and verification changes
+
+Official Technology References
+
+Solidity — https://docs.soliditylang.org/
+
+Foundry — https://getfoundry.sh/
+
+Chainlink — https://docs.chain.link/
+
+Chainlink CRE — https://docs.chain.link/cre
+
+OpenZeppelin Contracts — https://docs.openzeppelin.com/contracts/5.x/
+
+GitHub repository README guidance — https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
+
+License
+
+This project is released under the MIT License. See LICENSE for details.
 
 <div align="center">
 
-🏪 Voryn Marketplace Protocol
+Ali Voryn
 
-<strong>Composable on-chain commerce infrastructure built around explicit state, modular settlement, and accountable value flows.</strong>
+Beyond Every Defined Horizon.
+
+Built to explore where protocol architecture, verification, and automation meet.
 
 </div>

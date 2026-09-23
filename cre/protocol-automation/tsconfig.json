@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "ESNext"
+    ],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "types": [],
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "main.ts",
+    "automation.ts",
+    "report.ts", "config.ts"
+  ]
+}

@@ -1,0 +1,18 @@
+simulation-settings:
+  user-workflow:
+    workflow-name: "ali-voryn-protocol-automation-simulation"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.simulation.json"
+staging-settings:
+  user-workflow:
+    workflow-name: "ali-voryn-protocol-automation-staging"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.staging.json"
+production-settings:
+  user-workflow:
+    workflow-name: "ali-voryn-protocol-automation-production"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"

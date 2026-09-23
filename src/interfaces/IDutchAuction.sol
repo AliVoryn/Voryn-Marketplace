@@ -1,4 +1,6 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
+
 interface IDutchAuction {
     enum AuctionStatus {
         Created,
@@ -7,6 +9,7 @@ interface IDutchAuction {
         Cancelled,
         Expired
     }
+
     struct Auction {
         uint256 id;
         address seller;
@@ -42,6 +45,7 @@ interface IDutchAuction {
     error NotSeller();
     error InvalidAuction();
     error PaymentMismatch();
+    error RefundFailed();
     error FeeTooHigh();
     error SellerNoLongerOwnsAsset();
     error DirectPaymentNotAllowed();

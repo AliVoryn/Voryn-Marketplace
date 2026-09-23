@@ -1,0 +1,12 @@
+{
+  "reportTuple": [
+    "uint8 action",
+    "address instance",
+    "uint256 id",
+    "uint256 value",
+    "uint256 cursor",
+    "uint64 scheduledAt",
+    "uint64 chainSelector"
+  ],
+  "metadata": "64-byte production CRE metadata: bytes32 workflowId + bytes10 workflowName + address workflowOwner + bytes2 reportId"
+}

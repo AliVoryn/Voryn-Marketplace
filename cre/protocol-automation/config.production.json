@@ -1,0 +1,19 @@
+{
+  "schedule": "0 * * * * *",
+  "evms": [
+    {
+      "chainSelectorName": "ethereum-mainnet",
+      "isTestnet": false,
+      "registryAddress": "<PROTOCOL_REGISTRY_ADDRESS>",
+      "receiverAddress": "<AUTOMATION_RECEIVER_ADDRESS>",
+      "gasLimit": "1000000",
+      "instancesPerKindPerRun": 1,
+      "maxIdsPerInstance": 25,
+      "maxScanPerInstance": 250,
+      "maxReportsPerRun": 10,
+      "refundBatchSize": 12,
+      "partitionCount": 1,
+      "partitionIndex": 0
+    }
+  ]
+}
