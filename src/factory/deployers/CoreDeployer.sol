@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import "../../core/Treasury.sol";
-import "../../core/PaymentManager.sol";
+import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import { Treasury } from "../../core/Treasury.sol";
+import { PaymentManager } from "../../core/PaymentManager.sol";
 
 library CoreDeployer {
     function deployTreasury(address initialOwner, address feeRecipient, address factoryController)

@@ -330,12 +330,13 @@ behavioural, fuzz, invariant, integration, fork, deployment, or security testing
 ```text
 .
 ├── .github/
-│   └── dependabot.yml             # Dependency update visibility (Actions + CRE npm)
+│   ├── dependabot.yml             # Automated dependency update configuration
+│   └── workflows/ci.yml           # Foundry and CRE quality gates
 ├── assets/                        # Repository banner and brand assets
 ├── cre/
 │   └── protocol-automation/       # Chainlink CRE TypeScript workflow
 ├── docs/                          # Documentation set — start at docs/README.md
-├── lib/                           # Pinned dependencies (vendored; @chainlink/ -> lib/chainlink-evm)
+├── lib/                           # Pinned dependencies (forge-std is a Git submodule)
 ├── script/                        # 15 deployment, governance, VRF, automation, verification scripts
 ├── src/
 │   ├── automation/                # Automation receiver boundary
@@ -365,14 +366,13 @@ behavioural, fuzz, invariant, integration, fork, deployment, or security testing
 ├── verification/                  # Mutation + symbolic verification layers
 ├── foundry.toml                   # Foundry configuration and profiles
 ├── remappings.txt                 # Dependency import mapping
-├── Makefile                       # Reproducible developer commands
 ├── SECURITY.md                    # Security reporting policy
 └── LICENSE                        # MIT
 ```
 
 ## Toolchain & Dependency Pins
 
-The project uses explicit versions to make builds reproducible.
+The project pins its toolchain and dependencies to keep builds reproducible.
 
 **Solidity / Foundry**
 
@@ -395,9 +395,8 @@ The project uses explicit versions to make builds reproducible.
 | `zod` | `3.25.76` |
 | TypeScript | `5.9.2` |
 
-`script/install-dependencies.sh` installs the pinned Foundry dependencies and verifies that the four
-critical imports resolve. Dependency installation is reproducible rather than tracking moving development
-branches.
+`forge-std` is pinned by its Git submodule commit. The OpenZeppelin and Chainlink source trees are vendored
+at the versions above, while the CRE workspace is locked by `package-lock.json`.
 
 ## Getting Started
 
@@ -406,34 +405,34 @@ fork and deployment workflows.
 
 ```bash
 cp .env.example .env
-make setup
+git submodule update --init --recursive
 ```
 
 ```bash
 # Format, build, test
-make fmt-check
-make build
-make test
+forge fmt --check
+forge build --sizes
+forge test
 ```
 
 ```bash
 # Deeper verification
-make lint
-make fuzz
-make invariant
-make coverage
-make snapshot
+forge lint
+FOUNDRY_PROFILE=ci forge test --match-test 'testFuzz_'
+FOUNDRY_PROFILE=ci forge test --match-test 'invariant_'
+forge coverage --report summary --no-match-path 'script/**'
+forge snapshot
 ```
 
 ```bash
 # Fork tests (requires RPC_URL)
-make fork
+forge test --match-path 'test/**/*.Fork.t.sol' -vvvv
 ```
 
 ```bash
 # Preflight and post-deployment verification (read-only, require RPC_URL)
-make preflight
-make verify-deployment
+forge script script/Preflight.s.sol --rpc-url "$RPC_URL"
+forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"
 ```
 
 ```bash
@@ -547,7 +546,7 @@ deployment. Each is documented with its consequence and the decision it requires
   paused, which freezes buyer escrow for the duration.
 - Pausing a `CustomNFT` collection also freezes transfers, so a paused collection cannot settle auctions,
   raffles, or listings that escrow its tokens.
-- The tree needs one `forge fmt` pass before a strict formatting gate can be considered clean.
+- Formatting, compilation, linting, Foundry tests, and CRE checks are enforced by CI.
 - A passing local test suite does not substitute for independent review of live Chainlink configuration,
   target-chain addresses, or production operations.
 

@@ -249,13 +249,13 @@ forge test --match-contract Marketplace
 forge test --match-path 'test/auctions/**'
 
 # Only fuzz tests, at the CI profile
-make fuzz
+FOUNDRY_PROFILE=ci forge test --match-test 'testFuzz_'
 
 # Only invariants, at the CI profile
-make invariant
+FOUNDRY_PROFILE=ci forge test --match-test 'invariant_'
 
 # Only the fork gate
-make fork                     # requires RPC_URL
+forge test --match-path 'test/**/*.Fork.t.sol' -vvvv                     # requires RPC_URL
 
 # Fast sanity pass over everything
 FOUNDRY_PROFILE=ci-fast forge test

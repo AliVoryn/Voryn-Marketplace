@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "../interfaces/IPaymentManager.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { IPaymentManager } from "../interfaces/IPaymentManager.sol";
 
 contract PaymentManager is Ownable2Step, ReentrancyGuard, IPaymentManager {
     mapping(address => uint256) private claimableBalance;

@@ -18,15 +18,15 @@ specifics), [security.md](security.md) (trust model and known limitations).
 | Gate | Command | Blocking |
 | --- | --- | --- |
 | Clean checkout at a reviewed commit | `git status --porcelain` (empty) | Yes |
-| Pinned dependencies installed and verified | `make setup` | Yes |
+| Pinned dependencies installed and verified | `git submodule update --init --recursive` | Yes |
 | Contract size | `forge build --sizes` | Yes |
-| Full test suite | `make test` | Yes |
-| Fuzz at CI profile | `make fuzz` | Yes |
-| Invariants at CI profile | `make invariant` | Yes |
-| Static analysis | `make lint` | Yes |
-| Fork gate | `make fork` (`RPC_URL` required) | Yes |
-| Environment gate | `make preflight` | Yes |
-| Authority graph after deployment | `make verify-deployment` | Yes |
+| Full test suite | `forge test` | Yes |
+| Fuzz at CI profile | `FOUNDRY_PROFILE=ci forge test --match-test 'testFuzz_'` | Yes |
+| Invariants at CI profile | `FOUNDRY_PROFILE=ci forge test --match-test 'invariant_'` | Yes |
+| Static analysis | `forge lint` | Yes |
+| Fork gate | `forge test --match-path 'test/**/*.Fork.t.sol' -vvvv` (`RPC_URL` required) | Yes |
+| Environment gate | `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` | Yes |
+| Authority graph after deployment | `forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` | Yes |
 | External security review | out of band | Yes, before broadcast |
 | Second-operator review of every configuration value | out of band | Yes |
 
@@ -34,7 +34,7 @@ specifics), [security.md](security.md) (trust model and known limitations).
 
 - Pin Foundry to **v1.8.3**.
 - Pin Solidity to **0.8.24**.
-- Install dependencies with `script/install-dependencies.sh`.
+- Initialize the pinned `forge-std` submodule with `git submodule update --init --recursive`.
 - **Record the repository commit used for deployment.** A deployment whose commit is unknown cannot be
   reproduced or verified.
 - Build from a clean checkout.
@@ -61,7 +61,7 @@ export EXPECTED_CHAIN_ID=<chain id>
 export DEPLOYER_PRIVATE_KEY=<key>       # read only; preflight never signs
 export PROTOCOL_ADMIN=<timelock>
 export FEE_RECIPIENT=<recipient>
-make preflight
+forge script script/Preflight.s.sol --rpc-url "$RPC_URL"
 ```
 
 The protocol-admin target for a governance-controlled release **is** the deployed Timelock address.
@@ -99,7 +99,7 @@ network RPC is unexpected. See [preflight.md](preflight.md) for the failure play
    (`ScheduleGovernanceOwnershipAcceptance.s.sol`).
 10. After the configured delay, execute the batch
     (`ExecuteGovernanceOwnershipAcceptance.s.sol`).
-11. Run `make verify-deployment` against the live deployment.
+11. Run `forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` against the live deployment.
 
 Steps 8–10 exist because every critical contract uses two-step ownership. A Timelock **cannot** accept
 ownership from an EOA-signed transaction; the acceptance must itself be a scheduled Timelock operation.
@@ -133,7 +133,7 @@ accept ownership for a Timelock.
 
 ## 9. Protocol state after handoff
 
-`make verify-deployment` checks all of the following automatically; this list is the human-readable
+`forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` checks all of the following automatically; this list is the human-readable
 counterpart, and it is also the list to walk manually if the script cannot run.
 
 - Factory owner, and Factory registrar status on the Registry.
@@ -172,7 +172,6 @@ These are documented in full, with consequences and the decision each one requir
 | Offer refunds (`cancelOffer`, `expireOffer`) are blocked while the Marketplace is paused | Pausing freezes buyer escrow; treat pausing as an economic decision |
 | Pausing a `CustomNFT` collection freezes transfers | A paused collection cannot settle auctions, raffles, or listings that escrow its tokens |
 | A stuck raffle can only be cancelled by its creator after the delay | Liveness depends on creator availability |
-| The whole tree needs one `forge fmt` pass | `forge fmt --check` must pass before the strict CI formatting gate is considered clean |
 
 ## 12. Verification and monitoring
 
@@ -192,5 +191,5 @@ These are documented in full, with consequences and the decision each one requir
 - Never commit `.env` files or private keys.
 - Do not treat a passing unit or invariant suite as a substitute for an external security audit or live
   dependency verification.
-- If `make verify-deployment` fails any check, treat the deployment as failed: fix the configuration,
+- If `forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` fails any check, treat the deployment as failed: fix the configuration,
   redeploy to a fresh address set, and do not patch around it with manual transactions.

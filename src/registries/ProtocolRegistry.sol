@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "../interfaces/IRegistry.sol";
+import { EnumerableSet } from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import { IRegistry } from "../interfaces/IRegistry.sol";
 
 contract ProtocolRegistry is Ownable2Step, IRegistry {
     using EnumerableSet for EnumerableSet.AddressSet;

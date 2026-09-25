@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "../interfaces/IBlindAuction.sol";
-import "../interfaces/ICustomNFT.sol";
-import "../interfaces/ITreasury.sol";
-import "../libraries/AuctionPhaseLib.sol";
-import "../libraries/FeeMath.sol";
+import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { IBlindAuction } from "../interfaces/IBlindAuction.sol";
+import { ICustomNFT } from "../interfaces/ICustomNFT.sol";
+import { ITreasury } from "../interfaces/ITreasury.sol";
+import { AuctionPhaseLib } from "../libraries/AuctionPhaseLib.sol";
+import { FeeMath } from "../libraries/FeeMath.sol";
 
 contract BlindAuction is IBlindAuction, Ownable2Step, Pausable, ReentrancyGuard {
     using AuctionPhaseLib for AuctionPhaseLib.Clock;

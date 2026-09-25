@@ -20,7 +20,7 @@ change is architectural or incidental.
 | 3 | Privileged operations are explicit in ownership, roles, and governance | `Ownable2Step` on auctions, staking, treasury, payment manager, factory, registry, raffle, receiver; `AccessControl` on `Marketplace` and `CustomNFT` |
 | 4 | Upgradeability is used only where operationally justified | Only `Marketplace` is upgradeable (UUPS). Auctions, staking, raffle, treasury, payment manager, NFT, factory, and registry are immutable |
 | 5 | Domain behaviour is kept close to its tests | `test/<domain>/<Contract>.<Methodology>.t.sol` — see [test-matrix.md](test-matrix.md) |
-| 6 | Deployment configuration is explicit and reproducible | Pinned toolchain, `script/install-dependencies.sh`, explicit env vars, `make preflight` before any broadcast |
+| 6 | Deployment configuration is explicit and reproducible | Pinned toolchain and dependencies, explicit env vars, `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` before any broadcast |
 | 7 | Core contracts never depend on the automation layer | `src/core/**` contains no import of `src/automation/**`. Automation reads through public views and writes through public lifecycle functions |
 | 8 | Automation is fail-closed | `ProtocolAutomationReceiver` is constructed paused and refuses to unpause without a workflow id **and** author |
 
@@ -289,7 +289,7 @@ reads per execution. See [AUTOMATION.md](AUTOMATION.md) for the gas and rotation
 | Chainlink CRE | KeystoneForwarder authenticates the report envelope; workflow identity is configured on-chain | Arbitrary reports | Forwarder allowlist, workflow id + author check, registry kind check, replay map, schedule skew window |
 | External NFT contracts | That `ownerOf` / `transferFrom` / `safeTransferFrom` behave per ERC-721 | Non-standard implementations | `nft.code.length != 0` checks at every entry point; ownership re-verified before settlement |
 | Users and receivers | Nothing | Reverting receivers, reentrant callbacks | Pull-based refunds, `nonReentrant` on every value-moving function, `Receive`/`fallback` that rejects direct payments in auction, raffle, and payment contracts |
-| Deployer | Correct environment configuration at broadcast time | — | `make preflight` gate, explicit `EXPECTED_CHAIN_ID`, second-operator review |
+| Deployer | Correct environment configuration at broadcast time | — | `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` gate, explicit `EXPECTED_CHAIN_ID`, second-operator review |
 | Governance | Timelock delay and proposer set | — | Delay is a constructor argument; bootstrap admin should be `address(0)` |
 
 ---

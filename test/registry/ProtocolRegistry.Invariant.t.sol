@@ -2,9 +2,6 @@
 pragma solidity ^0.8.24;
 
 import "../support/TestBase.sol";
-import "forge-std/StdInvariant.sol";
-
-contract RegistryInvariantInstance { }
 
 contract ProtocolRegistryInvariantHandler is Test {
     ProtocolRegistry internal immutable registry;
@@ -29,8 +26,9 @@ contract ProtocolRegistryInvariantHandler is Test {
         if (version == 0) version = 1;
         address creator = (selector & 1) == 0 ? creatorA : creatorB;
         bytes32 kind = _kind(selector >> 1);
-        RegistryInvariantInstance instance = new RegistryInvariantInstance();
-        registry.registerInstance(address(instance), creator, address(0), kind, version);
+        address instance = address(uint160(0x10000 + registeredCount));
+        vm.etch(instance, hex"00");
+        registry.registerInstance(instance, creator, address(0), kind, version);
         ++registeredCount;
         if (creator == creatorA) {
             ++creatorACount;

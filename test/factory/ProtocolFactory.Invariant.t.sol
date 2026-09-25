@@ -2,7 +2,6 @@
 pragma solidity ^0.8.24;
 
 import "../support/TestBase.sol";
-import "forge-std/StdInvariant.sol";
 
 contract FactoryInvariantHandler is Test {
     ProtocolFactory internal immutable factory;

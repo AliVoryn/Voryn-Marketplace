@@ -48,7 +48,7 @@ Never call `setExpectedWorkflowId` / `setExpectedAuthor` on the simulation recei
 
 ## Deployment requirements
 
-1. Install the Solidity dependencies with `make setup` and the workflow dependencies with `npm ci` in this directory.
+1. Initialize the Solidity submodule with `git submodule update --init --recursive` and install the workflow dependencies with `npm ci` in this directory.
 2. Simulation first: deploy `ProtocolAutomationSimulationReceiver` with the MockForwarder, put it in `config.simulation.json`, run `cre workflow simulate --target simulation-settings`.
 2b. Real runs: deploy `ProtocolAutomationReceiver` with the **real target-chain Keystone Forwarder** and `ProtocolRegistry` address.
 3. Deploy the CRE workflow and obtain the workflow id and workflow author.

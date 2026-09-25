@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "../../core/Raffle.sol";
+import { Raffle } from "../../core/Raffle.sol";
 
 library RaffleDeployer {
     struct Params {

@@ -2,11 +2,11 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Script.sol";
-import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "../src/factory/ProtocolFactory.sol";
-import "../src/registries/ProtocolRegistry.sol";
-import "../src/core/Treasury.sol";
-import "../src/core/PaymentManager.sol";
+import { Ownable2Step } from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import { ProtocolFactory } from "../src/factory/ProtocolFactory.sol";
+import { ProtocolRegistry } from "../src/registries/ProtocolRegistry.sol";
+import { Treasury } from "../src/core/Treasury.sol";
+import { PaymentManager } from "../src/core/PaymentManager.sol";
 
 interface IMarketplaceAuthority {
     function hasRole(bytes32 role, address account) external view returns (bool);

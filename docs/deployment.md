@@ -13,7 +13,7 @@ Deployment is split by responsibility rather than hidden inside one script. Thre
 
 1. **Every step is independently verifiable.** Each script prints the addresses it produced, and
    `VerifyDeployment.s.sol` re-checks the resulting authority graph on-chain.
-2. **Nothing is broadcast implicitly.** `make preflight` and `make verify-deployment` are read-only.
+2. **Nothing is broadcast implicitly.** `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` and `forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` are read-only.
    Broadcasting is always an explicit `--broadcast` flag supplied by an operator.
 3. **Wiring is asserted, not assumed.** The Factory checks `factoryController` before granting payer
    rights; the Marketplace refuses a Treasury that has not authorised it; `VerifyDeployment` re-checks all
@@ -37,7 +37,7 @@ Deployment is split by responsibility rather than hidden inside one script. Thre
 6. VRF subscription         create → register consumer → fund
 7. Ownership transfer       transferOwnership(timelock) across the protocol
 8. Governance acceptance    schedule batch → wait for delay → execute batch
-9. Verification             make verify-deployment
+9. Verification             forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"
 10. Smoke tests             one controlled operation per subsystem
 ```
 
@@ -147,7 +147,7 @@ Registry and Marketplace implementation created inside the Factory's constructor
 
 ## 6. Verification of the deployed authority graph
 
-`make verify-deployment` runs `VerifyDeployment.s.sol`, which aborts with a distinct
+`forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` runs `VerifyDeployment.s.sol`, which aborts with a distinct
 `DeploymentMismatch(<check>)` for each of the following:
 
 | Check | Expectation |
@@ -189,7 +189,7 @@ A deployment is not complete until each subsystem has executed one controlled op
 
 | Anti-pattern | Why it is wrong |
 | --- | --- |
-| Broadcasting without `make preflight` | The preflight script is the only automated check of chain id, deployer, and configuration |
+| Broadcasting without `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` | The preflight script is the only automated check of chain id, deployer, and configuration |
 | Deploying the Raffle before verifying the target-chain VRF configuration | The constructor validates shapes, not addresses; a wrong-but-valid coordinator is accepted |
 | Finalising controllers before ownership handoff | Leaves the protocol unsupervised in the interim |
 | Accepting ownership for a Timelock through an EOA script | Impossible for a correct `Ownable2Step` flow and a sign of a wrong assumption |

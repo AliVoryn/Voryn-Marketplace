@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 
 import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import { IReceiver } from "./IReceiver.sol";
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { Ownable as OwnableBase } from "@openzeppelin/contracts/access/Ownable.sol";
 
-abstract contract ReceiverTemplate is IReceiver, Ownable {
+abstract contract ReceiverTemplate is IReceiver, OwnableBase {
     address private s_forwarderAddress;
 
     address private s_expectedAuthor;
@@ -28,7 +28,7 @@ abstract contract ReceiverTemplate is IReceiver, Ownable {
     event ExpectedWorkflowIdUpdated(bytes32 indexed previousId, bytes32 indexed newId);
     event SecurityWarning(string message);
 
-    constructor(address _forwarderAddress) Ownable(msg.sender) {
+    constructor(address _forwarderAddress) OwnableBase(msg.sender) {
         if (_forwarderAddress == address(0)) {
             revert InvalidForwarderAddress();
         }

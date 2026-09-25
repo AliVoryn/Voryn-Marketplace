@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "../interfaces/IBlindAuction.sol";
+import { IBlindAuction } from "../interfaces/IBlindAuction.sol";
 
 library AuctionPhaseLib {
     struct Clock {

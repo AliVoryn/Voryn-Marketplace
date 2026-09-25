@@ -224,12 +224,12 @@ a binary search over these spans.
 
 ## Verification infrastructure terms
 
-**Gas snapshot** — `make snapshot` → `forge snapshot`. Records gas usage so a regression is visible as a
+**Gas snapshot** — `forge snapshot` → `forge snapshot`. Records gas usage so a regression is visible as a
 diff.
 
 **Profile** — a named configuration block in `foundry.toml`. Three are used: `default`, `ci`, `ci-fast`.
 
-**Preflight** — the read-only pre-broadcast gate (`make preflight`). Checks chain id, deployer, admin, fee
+**Preflight** — the read-only pre-broadcast gate (`forge script script/Preflight.s.sol --rpc-url "$RPC_URL"`). Checks chain id, deployer, admin, fee
 recipient, raffle fee, and VRF confirmation count, then exits without signing.
 
 **Vendored** — third-party code committed into the repository rather than pulled at build time. Applies to

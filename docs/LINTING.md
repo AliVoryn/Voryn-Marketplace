@@ -4,7 +4,7 @@
 so the rules are visible in the repository rather than hidden in a CI file.
 
 ```bash
-make lint          # forge lint
+forge lint
 ```
 
 ```toml
@@ -27,7 +27,7 @@ exclude_lints = ["block-timestamp"]
 | `test/**` | No | Test code is checked by the test suite and by review, not by static analysis heuristics |
 | `script/**` | No | Deployment scripts are operator tooling; their correctness is verified by tests, preflight, and post-deployment verification |
 
-`lint_on_build = false` keeps `make build` fast and keeps lint output out of the build log, so a lint
+`lint_on_build = false` keeps `forge build --sizes` fast and keeps lint output out of the build log, so a lint
 regression is noticed as a lint regression rather than as build noise.
 
 ## 2. The `block-timestamp` exclusion
@@ -117,9 +117,7 @@ should stay that way. A long exclusion list turns a quality gate into a formalit
 
 | Gate | Command | Current state |
 | --- | --- | --- |
-| Formatting | `make fmt-check` → `forge fmt --check` | **Known pending work.** The tree needs one `forge fmt` pass before this gate can be considered clean |
-| Static analysis | `make lint` → `forge lint` | Passes with the findings above kept visible |
+| Formatting | `forge fmt --check` | Enforced in CI |
+| Static analysis | `forge lint` | Enforced in CI; reviewed warnings remain visible |
 
-The formatting state is documented rather than hidden: it is listed as an open release consideration in
-[mainnet.md](mainnet.md#11-known-design-limitations) because a strict formatting CI gate cannot be
-enabled until the pass is run and reviewed.
+Formatting and linting run as separate CI steps so failures are attributable to the correct quality gate.

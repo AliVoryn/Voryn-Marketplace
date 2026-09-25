@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "../interfaces/IStaking.sol";
-import "../interfaces/ITreasury.sol";
-import "../libraries/RewardMath.sol";
+import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { IStaking } from "../interfaces/IStaking.sol";
+import { ITreasury } from "../interfaces/ITreasury.sol";
+import { RewardMath } from "../libraries/RewardMath.sol";
 
 contract Staking is Ownable2Step, Pausable, ReentrancyGuard, IStaking {
     uint256 public constant ACC_SCALE = 1e18;

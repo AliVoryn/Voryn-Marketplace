@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
-import "@openzeppelin/contracts/utils/math/Math.sol";
-import "../interfaces/ICustomNFT.sol";
-import "../interfaces/IDutchAuction.sol";
-import "../interfaces/ITreasury.sol";
-import "../libraries/FeeMath.sol";
-import "../libraries/AutomationScanLib.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
+import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
+import { ICustomNFT } from "../interfaces/ICustomNFT.sol";
+import { IDutchAuction } from "../interfaces/IDutchAuction.sol";
+import { ITreasury } from "../interfaces/ITreasury.sol";
+import { FeeMath } from "../libraries/FeeMath.sol";
+import { AutomationScanLib } from "../libraries/AutomationScanLib.sol";
 
 contract DutchAuction is Ownable2Step, ReentrancyGuard, Pausable, IDutchAuction {
     using Math for uint256;

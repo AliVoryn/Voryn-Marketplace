@@ -2,16 +2,16 @@
 pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
 import { VRFV2PlusClient } from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 import { IVRFCoordinatorV2Plus } from "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2Plus.sol";
-import "../interfaces/ICustomNFT.sol";
-import "../interfaces/IRaffle.sol";
-import "../interfaces/ITreasury.sol";
-import "../libraries/FeeMath.sol";
-import "../libraries/RaffleMath.sol";
-import "../libraries/AutomationScanLib.sol";
+import { ICustomNFT } from "../interfaces/ICustomNFT.sol";
+import { IRaffle } from "../interfaces/IRaffle.sol";
+import { ITreasury } from "../interfaces/ITreasury.sol";
+import { FeeMath } from "../libraries/FeeMath.sol";
+import { RaffleMath } from "../libraries/RaffleMath.sol";
+import { AutomationScanLib } from "../libraries/AutomationScanLib.sol";
 
 contract Raffle is Ownable2Step, ReentrancyGuard, Pausable, IRaffle {
     uint16 public constant MAX_FEE_BPS = 1000;

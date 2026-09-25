@@ -4,7 +4,9 @@ pragma solidity ^0.8.24;
 import "../support/TestBase.sol";
 import "../../src/automation/ProtocolAutomationReceiver.sol";
 import "../../src/automation/ProtocolAutomationSimulationReceiver.sol";
+import { IReceiver } from "../../src/automation/chainlink/IReceiver.sol";
 import "../../src/interfaces/IRegistry.sol";
+import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 contract AutomationForwarderMock { }
 
