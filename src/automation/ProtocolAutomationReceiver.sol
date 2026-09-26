@@ -2,14 +2,14 @@
 pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
-import "./chainlink/ReceiverTemplate.sol";
-import "../interfaces/IAuction.sol";
-import "../interfaces/IBlindAuction.sol";
-import "../interfaces/IDutchAuction.sol";
-import "../interfaces/IMarketplace.sol";
-import "../interfaces/IRaffle.sol";
-import "../interfaces/IRegistry.sol";
+import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
+import { ReceiverTemplate } from "./chainlink/ReceiverTemplate.sol";
+import { IAuction } from "../interfaces/IAuction.sol";
+import { IBlindAuction } from "../interfaces/IBlindAuction.sol";
+import { IDutchAuction } from "../interfaces/IDutchAuction.sol";
+import { IMarketplace } from "../interfaces/IMarketplace.sol";
+import { IRaffle } from "../interfaces/IRaffle.sol";
+import { IRegistry } from "../interfaces/IRegistry.sol";
 
 interface IRaffleAutomationView {
     function refundCursor(uint256 raffleId) external view returns (uint256);

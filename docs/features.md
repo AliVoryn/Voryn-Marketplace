@@ -305,14 +305,14 @@ Contracts: `src/automation/*` · Workflow: `cre/protocol-automation/` · Docs: [
 | --- | --- |
 | Domain-organised test suites | `test/<domain>/` — 84 `.t.sol` files, 638 test functions, 14 invariant functions |
 | Fuzz and invariant profiles | `foundry.toml` default (`512` runs / `128 x 128`) and `ci` (`4096` runs / `512 x 256`) |
-| Fork gate | `test/raffle/Raffle.Fork.t.sol` via `make fork` |
-| Coverage measurement | `make coverage` |
-| Gas snapshotting | `make snapshot` |
-| Static analysis | `make lint` (`forge lint`, scope and exclusions in `foundry.toml`) |
+| Fork gate | `test/raffle/Raffle.Fork.t.sol` via `forge test --match-path 'test/**/*.Fork.t.sol' -vvvv` |
+| Coverage measurement | `forge coverage --report summary --no-match-path 'script/**'` |
+| Gas snapshotting | `forge snapshot` |
+| Static analysis | `forge lint` (`forge lint`, scope and exclusions in `foundry.toml`) |
 | Mutation testing | `verification/mutation/` (Gambit) |
 | Symbolic verification | `verification/symbolic/` (`solc --model-checker-engine all`) |
 | Deployment tooling | 15 Foundry scripts under `script/` |
-| Preflight gate | `make preflight` |
-| Post-deployment verification | `make verify-deployment` |
-| Dependency pinning | `script/install-dependencies.sh` + committed lockfile for the CRE workspace |
+| Preflight gate | `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` |
+| Post-deployment verification | `forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` |
+| Dependency pinning | Git submodule/vendor pins + committed lockfile for the CRE workspace |
 | Dependency monitoring | Dependabot for GitHub Actions and the CRE npm workspace |

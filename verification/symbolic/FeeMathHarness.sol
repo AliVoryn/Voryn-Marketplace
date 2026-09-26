@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-pragma experimental SMTChecker;
-
-import "../../src/libraries/FeeMath.sol";
+import { FeeMath } from "../../src/libraries/FeeMath.sol";
 
 contract SymbolicFeeMathHarness {
     function feeNeverExceedsAmount(uint256 amount, uint16 bps) external pure returns (bool) {

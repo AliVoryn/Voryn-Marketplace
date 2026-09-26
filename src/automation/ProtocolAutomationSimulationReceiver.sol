@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "./ProtocolAutomationReceiver.sol";
+import { ProtocolAutomationReceiver } from "./ProtocolAutomationReceiver.sol";
 
 contract ProtocolAutomationSimulationReceiver is ProtocolAutomationReceiver {
     constructor(address initialOwner, address mockForwarder_, address registry_, uint64 chainSelector_)

@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
-import "../interfaces/IAuction.sol";
-import "../interfaces/ICustomNFT.sol";
-import "../interfaces/ITreasury.sol";
-import "../libraries/AuctionMath.sol";
-import "../libraries/FeeMath.sol";
-import "../libraries/PhaseLogic.sol";
-import "../libraries/AutomationScanLib.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
+import { IAuction } from "../interfaces/IAuction.sol";
+import { ICustomNFT } from "../interfaces/ICustomNFT.sol";
+import { ITreasury } from "../interfaces/ITreasury.sol";
+import { AuctionMath } from "../libraries/AuctionMath.sol";
+import { FeeMath } from "../libraries/FeeMath.sol";
+import { PhaseLogic } from "../libraries/PhaseLogic.sol";
+import { AutomationScanLib } from "../libraries/AutomationScanLib.sol";
 
 contract OpenAuction is Ownable2Step, ReentrancyGuard, Pausable, IAuction {
     struct BidSnapshot {

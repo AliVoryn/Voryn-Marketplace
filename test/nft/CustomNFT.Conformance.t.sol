@@ -2,8 +2,8 @@
 pragma solidity ^0.8.24;
 
 import "../support/TestBase.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
 contract CustomNFTConformanceTest is ProtocolTestBase {
     CustomNFT internal token;

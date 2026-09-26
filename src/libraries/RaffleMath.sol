@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "../interfaces/IRaffle.sol";
+import { IRaffle } from "../interfaces/IRaffle.sol";
 
 library RaffleMath {
     error NoTickets();

@@ -172,11 +172,11 @@ run is recorded separately in [coverage-baseline.md](coverage-baseline.md#histor
 
 | Profile | Fuzz runs | Invariant runs × depth | Where |
 | --- | --- | --- | --- |
-| `default` | 512 | 128 × 128 | Local iteration, `make test` |
-| `ci` | 4096 | 512 × 256 | `make fuzz`, `make invariant`, CI |
+| `default` | 512 | 128 × 128 | Local iteration, `forge test` |
+| `ci` | 4096 | 512 × 256 | `FOUNDRY_PROFILE=ci forge test --match-test 'testFuzz_'`, `FOUNDRY_PROFILE=ci forge test --match-test 'invariant_'`, CI |
 | `ci-fast` | 256 | 64 × 64 | Pre-flight sanity before spending CI minutes |
 
-`make fuzz` and `make invariant` always run under `FOUNDRY_PROFILE=ci`. Running the heavier profile is the
+`FOUNDRY_PROFILE=ci forge test --match-test 'testFuzz_'` and `FOUNDRY_PROFILE=ci forge test --match-test 'invariant_'` always run under `FOUNDRY_PROFILE=ci`. Running the heavier profile is the
 default for those two targets on purpose: a fuzz suite that has not been run at 4096 runs has not really
 been run.
 
@@ -254,4 +254,4 @@ These are enforced by review, not by tooling:
 - Fork coverage exists for one integration. Target-chain behaviour for chains other than the one the fork
   suite targets is assumed, not verified.
 - Deployment scripts are verified by tests, but a script that works in a test can still be misconfigured
-  in production. `make preflight` exists for exactly that gap.
+  in production. `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` exists for exactly that gap.

@@ -4,7 +4,7 @@ The preflight script is the last automated check between a reviewed commit and a
 deliberately small, deliberately read-only, and deliberately unforgiving.
 
 ```bash
-make preflight          # requires RPC_URL + EXPECTED_CHAIN_ID in the environment
+forge script script/Preflight.s.sol --rpc-url "$RPC_URL"          # requires RPC_URL + EXPECTED_CHAIN_ID in the environment
 ```
 
 which runs:
@@ -39,10 +39,10 @@ Understanding the boundary is as important as the checks themselves.
 | Not checked | Why | Where it is covered instead |
 | --- | --- | --- |
 | Contract bytecode or size | Requires a build artefact, not an RPC read | `forge build --sizes`, before preflight in the runbook |
-| Test suite status | Preflight is an environment gate, not a CI gate | CI / `make test` before the release branch is cut |
+| Test suite status | Preflight is an environment gate, not a CI gate | CI / `forge test` before the release branch is cut |
 | VRF coordinator address validity | Requires chain-specific Chainlink documentation | Manual verification against official docs — [raffle-mainnet.md](raffle-mainnet.md) step 1 |
 | Keystone forwarder address validity | Same reason | Manual verification before receiver deployment |
-| Whether `PROTOCOL_ADMIN` is the Timelock | Preflight has no knowledge of the intended governance address | `make verify-deployment` check `admin-timelock`, after deployment |
+| Whether `PROTOCOL_ADMIN` is the Timelock | Preflight has no knowledge of the intended governance address | `forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` check `admin-timelock`, after deployment |
 | Explorer / verification configuration | Out of scope for the on-chain gate | `ETHERSCAN_API_KEY` and the verification plan in [mainnet.md](mainnet.md) |
 | Whether the deployer holds enough ETH | A broadcast-time concern | Investigate if the broadcast fails |
 
@@ -52,24 +52,25 @@ Understanding the boundary is as important as the checks themselves.
 reviewed commit on a clean checkout
         |
         v
-make setup               pinned dependencies installed and verified
+git submodule update --init --recursive               pinned dependencies installed and verified
         |
         v
 forge build --sizes      size gate (EIP-170 / EIP-3860)
         |
         v
-make test                full suite
-make fuzz / invariant    CI profile
-make lint                static analysis
+forge test                full suite
+FOUNDRY_PROFILE=ci forge test --match-test 'testFuzz_'     extended fuzz profile
+FOUNDRY_PROFILE=ci forge test --match-test 'invariant_'    extended invariant profile
+forge lint                static analysis
         |
         v
-make preflight           <-- this gate
+forge script script/Preflight.s.sol --rpc-url "$RPC_URL"           <-- this gate
         |
         v
 forge script script/Deploy.s.sol --broadcast
         |
         v
-make verify-deployment   authority graph re-checked on-chain
+forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"   authority graph re-checked on-chain
         |
         v
 post-deployment smoke tests
@@ -87,7 +88,7 @@ export PROTOCOL_ADMIN=0x…                # the Timelock address for a governan
 export FEE_RECIPIENT=0x…
 export DEPLOYER_PRIVATE_KEY=0x…          # only read, never used to sign
 
-make preflight
+forge script script/Preflight.s.sol --rpc-url "$RPC_URL"
 ```
 
 Two operating rules:
@@ -115,9 +116,9 @@ remaining verification is:
 
 1. `forge script script/Deploy.s.sol --broadcast` — record every printed address.
 2. Source-verify the seven Factory-related contracts plus every deployed instance.
-3. `make verify-deployment` with the recorded addresses — this is the authoritative check that the
+3. `forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` with the recorded addresses — this is the authoritative check that the
    authority graph matches the design.
 4. Post-deployment smoke tests, one per subsystem ([deployment.md](deployment.md#7-post-deployment-smoke-tests)).
 
-If `make verify-deployment` reports a mismatch, treat the deployment as failed: fix the configuration,
+If `forge script script/VerifyDeployment.s.sol --rpc-url "$RPC_URL"` reports a mismatch, treat the deployment as failed: fix the configuration,
 redeploy to a fresh address set, and do not patch around it with manual transactions.

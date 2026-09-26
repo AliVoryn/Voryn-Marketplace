@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "../interfaces/ITreasury.sol";
-import "../libraries/AccountingMath.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { ITreasury } from "../interfaces/ITreasury.sol";
+import { AccountingMath } from "../libraries/AccountingMath.sol";
 
 contract Treasury is Ownable2Step, ReentrancyGuard, ITreasury {
     struct SpendingWindow {

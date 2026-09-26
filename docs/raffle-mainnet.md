@@ -89,7 +89,7 @@ Monitoring that matters: `RandomnessRequested` without a matching `RaffleFinaliz
 ## 5. Dependency policy
 
 The repository uses the Foundry installation path for Chainlink EVM contracts and pins
-**`contracts-v1.5.0`** via `script/install-dependencies.sh`.
+**`contracts-v1.5.0`** in the vendored `lib/chainlink-evm` tree.
 
 The imported VRF interfaces live under Chainlink's `dev` source namespace:
 

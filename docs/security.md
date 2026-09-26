@@ -15,13 +15,13 @@ reviewer and to an operator, not to reassure either.
 
 | # | Boundary | Trusted for | Not trusted for | Enforcement |
 | --- | --- | --- | --- | --- |
-| 1 | OpenZeppelin Contracts `v5.4.0` and Contracts Upgradeable `v5.4.0` | `Ownable2Step`, `AccessControl`, `TimelockController`, `Pausable`, `ReentrancyGuard`, `ERC1967Proxy`, `UUPSUpgradeable`, `ECDSA`, `Math.mulDiv`, `Strings` | — | Pinned by `script/install-dependencies.sh`; both variants pinned to the same release |
+| 1 | OpenZeppelin Contracts `v5.4.0` and Contracts Upgradeable `v5.4.0` | `Ownable2Step`, `AccessControl`, `TimelockController`, `Pausable`, `ReentrancyGuard`, `ERC1967Proxy`, `UUPSUpgradeable`, `ECDSA`, `Math.mulDiv`, `Strings` | — | Both vendored trees are pinned to the same release |
 | 2 | Chainlink VRF V2.5 coordinator | Delivering `rawFulfillRandomWords` with the recorded `requestId` | Any other caller or request id | `requestIdToCoordinator[requestId]` must equal `msg.sender`; raffle phase and `vrfRequestId` must match; `randomWords.length == 1` |
 | 3 | Chainlink CRE forwarder | Authenticating the report envelope and the workflow metadata | The report *contents* | Forwarder address allowlist, workflow id + author configured on-chain, 224-byte payload shape, exhaustive action allowlist, registry lookups, replay map, schedule skew bound |
 | 4 | External ERC-721 contracts | `ownerOf`, `transferFrom`, `safeTransferFrom` behave per ERC-721 | Non-standard or malicious implementations | `nft.code.length != 0` at every entry point; ownership re-verified immediately before settlement; `safeTransferFrom` used wherever a receiver hook matters |
 | 5 | Treasury payers | Acting within `availableBalance()` and their daily allowance | — | `pay()` cannot exceed unencumbered funds; the rescue path is bounded the same way |
 | 6 | Users and contract receivers | Nothing | Reverting receivers, reentrancy, gas griefing | Pull-based refunds and withdrawals; `nonReentrant` on every value-moving function; `receive()` reverts in auction, raffle, and payment contracts |
-| 7 | Deployer environment | Correct configuration at broadcast time | — | `make preflight` with an explicit `EXPECTED_CHAIN_ID`; second-operator review before broadcast |
+| 7 | Deployer environment | Correct configuration at broadcast time | — | `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` with an explicit `EXPECTED_CHAIN_ID`; second-operator review before broadcast |
 | 8 | Governance / Timelock | Executing scheduled operations after the delay | — | Delay is a constructor parameter; bootstrap admin should be `address(0)` |
 
 ---
@@ -201,7 +201,7 @@ correctness or solvency issue.
 | Requirement | Reason |
 | --- | --- |
 | Never commit `.env`, private keys, RPC URLs, or API keys | `.gitignore` covers `.env` and `.env.*` except `.env.example`; the deployment runbook repeats the rule |
-| Never broadcast without `make preflight` | The preflight script is the only automated check of chain id, deployer, governance target, fee recipient, and VRF configuration |
+| Never broadcast without `forge script script/Preflight.s.sol --rpc-url "$RPC_URL"` | The preflight script is the only automated check of chain id, deployer, governance target, fee recipient, and VRF configuration |
 | Never accept ownership for a Timelock from an EOA path | `AcceptEOAProtocolOwnershipScript` is only valid for an EOA final owner; a `Ownable2Step` contract owned by a Timelock must accept through a scheduled Timelock operation |
 | Verify the target-chain VRF configuration independently | The repository pins Chainlink `contracts-v1.5.0`, but coordinator addresses and gas lanes are deployment inputs that must be checked against current official documentation |
 | Verify the Keystone forwarder address before receiver deployment | The receiver's trust in the forwarder is the whole basis of report authenticity |

@@ -179,7 +179,7 @@ coordinator before production.
 6. Exercise the full write path on testnet: CRE report → forwarder → receiver → domain function.
 7. Run the final Foundry suite and deployment verification before mainnet activation.
 
-Requires `make setup` for the Solidity dependencies and `npm ci` for the workflow dependencies. The package
+Requires `git submodule update --init --recursive` for the Solidity dependencies and `npm ci` for the workflow dependencies. The package
 lockfile is committed; `npm ci` fails if it drifts.
 
 ## 8. Pointers
